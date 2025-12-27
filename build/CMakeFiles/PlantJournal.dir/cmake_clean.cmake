@@ -1,0 +1,42 @@
+file(REMOVE_RECURSE
+  ".qt/rcc/qrc_migrations.cpp"
+  ".qt/rcc/qrc_qml.cpp"
+  "CMakeFiles/PlantJournal_autogen.dir/AutogenUsed.txt"
+  "CMakeFiles/PlantJournal_autogen.dir/ParseCache.txt"
+  "PlantJournal_autogen"
+  "CMakeFiles/PlantJournal.dir/PlantJournal_autogen/mocs_compilation.cpp.o"
+  "CMakeFiles/PlantJournal.dir/PlantJournal_autogen/mocs_compilation.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/app/main.cpp.o"
+  "CMakeFiles/PlantJournal.dir/app/main.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/build/.qt/rcc/qrc_migrations.cpp.o"
+  "CMakeFiles/PlantJournal.dir/build/.qt/rcc/qrc_migrations.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/build/.qt/rcc/qrc_qml.cpp.o"
+  "CMakeFiles/PlantJournal.dir/build/.qt/rcc/qrc_qml.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/data/JournalEntryRepository.cpp.o"
+  "CMakeFiles/PlantJournal.dir/data/JournalEntryRepository.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/data/MigrationRunner.cpp.o"
+  "CMakeFiles/PlantJournal.dir/data/MigrationRunner.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/data/PlantRepository.cpp.o"
+  "CMakeFiles/PlantJournal.dir/data/PlantRepository.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/data/ReminderRepository.cpp.o"
+  "CMakeFiles/PlantJournal.dir/data/ReminderRepository.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/data/ReminderSettingsRepository.cpp.o"
+  "CMakeFiles/PlantJournal.dir/data/ReminderSettingsRepository.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/services/JournalEntryListViewModel.cpp.o"
+  "CMakeFiles/PlantJournal.dir/services/JournalEntryListViewModel.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/services/PlantListViewModel.cpp.o"
+  "CMakeFiles/PlantJournal.dir/services/PlantListViewModel.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/services/ReminderListViewModel.cpp.o"
+  "CMakeFiles/PlantJournal.dir/services/ReminderListViewModel.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/services/ReminderScheduler.cpp.o"
+  "CMakeFiles/PlantJournal.dir/services/ReminderScheduler.cpp.o.d"
+  "CMakeFiles/PlantJournal.dir/services/ReminderSettingsViewModel.cpp.o"
+  "CMakeFiles/PlantJournal.dir/services/ReminderSettingsViewModel.cpp.o.d"
+  "PlantJournal"
+  "PlantJournal.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/PlantJournal.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

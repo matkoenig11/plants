@@ -1,0 +1,12 @@
+-rootPath
+/home/matthias/Documents/mestuff/plants
+-cmake-output
+-output-file
+/home/matthias/Documents/mestuff/plants/build/.qt/qml_imports/PlantJournal_build.cmake
+-importPath
+/home/matthias/Documents/mestuff/plants/build
+-importPath
+/home/matthias/Qt/6.9.1/gcc_64/qml
+-qrcFiles
+/home/matthias/Documents/mestuff/plants/build/.qt/rcc/qml.qrc
+/home/matthias/Documents/mestuff/plants/build/.qt/rcc/migrations.qrc

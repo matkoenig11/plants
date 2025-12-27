@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="/migrations">
+    <file alias="001_init.sql">/home/matthias/Documents/mestuff/plants/data/migrations/001_init.sql</file>
+    <file alias="002_add_plant_fields.sql">/home/matthias/Documents/mestuff/plants/data/migrations/002_add_plant_fields.sql</file>
+    <file alias="003_reminders_multi.sql">/home/matthias/Documents/mestuff/plants/data/migrations/003_reminders_multi.sql</file>
+    <file alias="004_add_reminder_name.sql">/home/matthias/Documents/mestuff/plants/data/migrations/004_add_reminder_name.sql</file>
+  </qresource>
+</RCC>
+

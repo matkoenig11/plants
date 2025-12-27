@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="app/Main.qml">/home/matthias/Documents/mestuff/plants/app/Main.qml</file>
+    <file alias="app/components/PlantListPane.qml">/home/matthias/Documents/mestuff/plants/app/components/PlantListPane.qml</file>
+    <file alias="app/components/PlantDetailPane.qml">/home/matthias/Documents/mestuff/plants/app/components/PlantDetailPane.qml</file>
+    <file alias="app/components/JournalEntryPane.qml">/home/matthias/Documents/mestuff/plants/app/components/JournalEntryPane.qml</file>
+    <file alias="app/components/BatchJournalPane.qml">/home/matthias/Documents/mestuff/plants/app/components/BatchJournalPane.qml</file>
+    <file alias="app/components/ReminderPane.qml">/home/matthias/Documents/mestuff/plants/app/components/ReminderPane.qml</file>
+  </qresource>
+</RCC>
+

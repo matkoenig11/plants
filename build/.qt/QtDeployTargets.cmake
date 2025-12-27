@@ -1,0 +1,2 @@
+set(__QT_DEPLOY_TARGET_PlantJournal_FILE /home/matthias/Documents/mestuff/plants/build/PlantJournal)
+set(__QT_DEPLOY_TARGET_PlantJournal_TYPE EXECUTABLE)

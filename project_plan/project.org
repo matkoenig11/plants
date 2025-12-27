@@ -1,0 +1,58 @@
+#+title: Plant Journal Plan
+#+author: Matthias
+
+* Vision
+Build a local-first plant journal to track plants, care history, and reminders.
+
+* Features
+** MVP
+- [X] SQLite schema + migration runner
+- [X] Plant CRUD (repository + basic UI)
+- [X] Journal entry logging (repository + basic UI)
+- [X] Journal entry editing (update/delete)
+- [X] Watering/fertilizing quick log + type presets
+- [X] Batch watering/fertilizing across plants
+- [X] Plant schema expanded to match XLSX fields
+- [X] Light/Dark theme toggle (Material)
+- [ ] Reminders (multi-plant, settings, basic UI)
+** Later
+- [ ] Import from XLSX
+- [ ] Notifications / scheduled reminders
+- [ ] Analytics / care history summaries
+
+* Milestones
+** DONE Project skeleton + migrations
+   CLOSED: [2025-12-26]
+** DONE Plant CRUD
+   CLOSED: [2025-12-26]
+** DONE Journal entries
+   CLOSED: [2025-12-26]
+** DONE Journal entry editing UI
+   CLOSED: [2025-12-27]
+** DONE Watering/fertilizing quick log
+   CLOSED: [2025-12-27]
+** DONE Batch watering/fertilizing
+   CLOSED: [2025-12-27]
+** DONE Plant schema update (XLSX alignment)
+   CLOSED: [2025-12-27]
+** DONE Light/Dark theme toggle
+   CLOSED: [2025-12-27]
+** TODO Reminders (multi-plant model + settings UI)
+   DEADLINE: <2025-01-15>
+
+* Decisions
+- Store dates in ISO 8601 text fields.
+- No DB access from QML; use ViewModels.
+- Migrations required for schema changes.
+
+* Data Model
+| Entity           | Fields                                                                                                           |
+|------------------+------------------------------------------------------------------------------------------------------------------|
+| Plant            | id, name, scientific_name, plant_type, winter_location, summer_location, light_requirement, watering_frequency, |
+|                  | watering_notes, humidity_preference, soil_type, pot_size, last_watered, fertilizing_schedule, last_fertilized,  |
+|                  | pruning_time, pruning_notes, last_pruned, growth_rate, current_health_status, issues_pests, temperature_tolerance,|
+|                  | toxic_to_pets, acquired_on, source, notes                                                                         |
+| JournalEntry     | id, plant_id, entry_type, entry_date, notes                                                                      |
+| Reminder         | id, custom_name, task_type, schedule_type, interval_days, start_date, next_due_date, notes                        |
+| ReminderPlant    | reminder_id, plant_id                                                                                            |
+| ReminderSettings | day_before_enabled, day_before_time, day_of_enabled, day_of_time, overdue_enabled, overdue_cadence_days, overdue_time, quiet_hours_start, quiet_hours_end |

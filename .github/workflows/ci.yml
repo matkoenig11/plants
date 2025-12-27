@@ -19,7 +19,7 @@ jobs:
         with:
           version: 6.6.3
           arch: gcc_64
-          modules: 'qtquickcontrols2 qtsql qtquicktest'
+          # modules: 'qtquickcontrols2 qtsql qtquicktest'
           cache: true
 
       - name: Configure

@@ -12,7 +12,7 @@ Keep UI (QML) separate from backend (C++ services + SQLite).
 - QML for UI
 - C++ for business logic
 - SQLite for storage (via Qt SQL module OR a thin sqlite wrapper)
-- Optional: Qt Test for unit tests
+- Qt Test + Qt Quick Test for unit and QML tests
 
 ## Repo layout
 - /app            QML + minimal glue
@@ -40,6 +40,12 @@ Keep UI (QML) separate from backend (C++ services + SQLite).
 2) CRUD Plants
 3) Journal entry logging
 4) Reminder scheduling + notifications
+
+## Testing strategy
+- Unit tests: repositories, ViewModels, scheduler logic (Qt Test).
+- QML tests: basic component checks (Qt Quick Test).
+- Integration tests: repo + migrations + ViewModel flows.
+- CI: build + ctest, use offscreen QML where needed.
 
 # Initial data source
 The inital data can be found in the plants_populated.xlsx file. 

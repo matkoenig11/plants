@@ -1,0 +1,41 @@
+# Build artifacts
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+/*.ninja
+/.ninja_log
+/.ninja_deps
+
+# Qt artifacts
+/*.pro.user
+/.qmake.stash
+*.qmlc
+*.jsc
+*.qmltypes
+*.metatypes
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test output
+/Testing/
+/CTestTestfile.cmake
+
+# App data / runtime
+*.sqlite
+*.sqlite3
+*.db
+plant_journal.sqlite
+
+# Logs
+*.log

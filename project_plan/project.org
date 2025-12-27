@@ -14,7 +14,8 @@ Build a local-first plant journal to track plants, care history, and reminders.
 - [X] Batch watering/fertilizing across plants
 - [X] Plant schema expanded to match XLSX fields
 - [X] Light/Dark theme toggle (Material)
-- [ ] Reminders (multi-plant, settings, basic UI)
+- [X] Reminders (multi-plant, settings, basic UI)
+- [X] Initial test suite (Qt Test + Qt Quick Test)
 ** Later
 - [ ] Import from XLSX
 - [ ] Notifications / scheduled reminders
@@ -37,8 +38,10 @@ Build a local-first plant journal to track plants, care history, and reminders.
    CLOSED: [2025-12-27]
 ** DONE Light/Dark theme toggle
    CLOSED: [2025-12-27]
-** TODO Reminders (multi-plant model + settings UI)
-   DEADLINE: <2025-01-15>
+** DONE Reminders (multi-plant model + settings UI)
+   CLOSED: [2025-12-27]
+** DONE Initial test suite (Qt Test + Qt Quick Test)
+   CLOSED: [2025-12-27]
 
 * Decisions
 - Store dates in ISO 8601 text fields.

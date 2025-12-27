@@ -1,4 +1,4 @@
-set(qml_import_scanner_imports_count 29)
+set(qml_import_scanner_imports_count 31)
 set(qml_import_scanner_import_0 "CLASSNAME;QtQuick2Plugin;LINKTARGET;Qt6::qtquick2plugin;NAME;QtQuick;PATH;/home/matthias/Qt/6.9.1/gcc_64/qml/QtQuick;PLUGIN;qtquick2plugin;PLUGINISOPTIONAL;;PREFER;:/qt-project.org/imports/QtQuick/;RELATIVEPATH;QtQuick;TYPE;module;")
 set(qml_import_scanner_import_1 "CLASSNAME;QtQmlPlugin;LINKTARGET;Qt6::qmlplugin;NAME;QtQml;PATH;/home/matthias/Qt/6.9.1/gcc_64/qml/QtQml;PLUGIN;qmlplugin;PLUGINISOPTIONAL;;PREFER;:/qt-project.org/imports/QtQml/;RELATIVEPATH;QtQml;TYPE;module;")
 set(qml_import_scanner_import_2 "NAME;QML;PATH;/home/matthias/Qt/6.9.1/gcc_64/qml/QML;PREFER;:/qt-project.org/imports/QML/;RELATIVEPATH;QML;TYPE;module;")
@@ -28,4 +28,6 @@ set(qml_import_scanner_import_25 "CLASSNAME;QmlShapesPlugin;LINKTARGET;Qt6::qmls
 set(qml_import_scanner_import_26 "CLASSNAME;QtQuickControls2BasicStyleImplPlugin;LINKTARGET;Qt6::qtquickcontrols2basicstyleimplplugin;NAME;QtQuick.Controls.Basic.impl;PATH;/home/matthias/Qt/6.9.1/gcc_64/qml/QtQuick/Controls/Basic/impl;PLUGIN;qtquickcontrols2basicstyleimplplugin;PLUGINISOPTIONAL;;PREFER;:/qt-project.org/imports/QtQuick/Controls/Basic/impl/;RELATIVEPATH;QtQuick/Controls/Basic/impl;TYPE;module;")
 set(qml_import_scanner_import_27 "CLASSNAME;QtQmlLabsModelsPlugin;LINKTARGET;Qt6::labsmodelsplugin;NAME;Qt.labs.qmlmodels;PATH;/home/matthias/Qt/6.9.1/gcc_64/qml/Qt/labs/qmlmodels;PLUGIN;labsmodelsplugin;PLUGINISOPTIONAL;;PREFER;:/qt-project.org/imports/Qt/labs/qmlmodels/;RELATIVEPATH;Qt/labs/qmlmodels;TYPE;module;")
 set(qml_import_scanner_import_28 "NAME;components;PATH;/home/matthias/Documents/mestuff/plants/app/components;TYPE;directory;")
+set(qml_import_scanner_import_29 "CLASSNAME;QtTestPlugin;COMPONENTS;/home/matthias/Qt/6.9.1/gcc_64/qml/QtTest/SignalSpy.qml;/home/matthias/Qt/6.9.1/gcc_64/qml/QtTest/TestCase.qml;/home/matthias/Qt/6.9.1/gcc_64/qml/QtTest/TestSchedule.qml;LINKTARGET;Qt6::QuickTestplugin;NAME;QtTest;PATH;/home/matthias/Qt/6.9.1/gcc_64/qml/QtTest;PLUGIN;quicktestplugin;PLUGINISOPTIONAL;;PREFER;:/qt-project.org/imports/QtTest/;RELATIVEPATH;QtTest;TYPE;module;")
+set(qml_import_scanner_import_30 "NAME;../../app/components;PATH;/home/matthias/Documents/mestuff/plants/app/components;TYPE;directory;")
 

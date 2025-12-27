@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/matthias/Documents/mestuff/plants/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "No interactive CMake dialog available..."
@@ -167,6 +177,162 @@ PlantJournal_autogen: cmake_check_build_system
 PlantJournal_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/PlantJournal_autogen.dir/build.make CMakeFiles/PlantJournal_autogen.dir/build
 .PHONY : PlantJournal_autogen/fast
+
+#=============================================================================
+# Target rules for targets named ReminderSchedulerTests
+
+# Build rule for target.
+ReminderSchedulerTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ReminderSchedulerTests
+.PHONY : ReminderSchedulerTests
+
+# fast build rule for target.
+ReminderSchedulerTests/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ReminderSchedulerTests.dir/build.make tests/CMakeFiles/ReminderSchedulerTests.dir/build
+.PHONY : ReminderSchedulerTests/fast
+
+#=============================================================================
+# Target rules for targets named PlantRepositoryTests
+
+# Build rule for target.
+PlantRepositoryTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PlantRepositoryTests
+.PHONY : PlantRepositoryTests
+
+# fast build rule for target.
+PlantRepositoryTests/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/PlantRepositoryTests.dir/build.make tests/CMakeFiles/PlantRepositoryTests.dir/build
+.PHONY : PlantRepositoryTests/fast
+
+#=============================================================================
+# Target rules for targets named ReminderRepositoryTests
+
+# Build rule for target.
+ReminderRepositoryTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ReminderRepositoryTests
+.PHONY : ReminderRepositoryTests
+
+# fast build rule for target.
+ReminderRepositoryTests/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ReminderRepositoryTests.dir/build.make tests/CMakeFiles/ReminderRepositoryTests.dir/build
+.PHONY : ReminderRepositoryTests/fast
+
+#=============================================================================
+# Target rules for targets named QmlTests
+
+# Build rule for target.
+QmlTests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 QmlTests
+.PHONY : QmlTests
+
+# fast build rule for target.
+QmlTests/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/QmlTests.dir/build.make tests/CMakeFiles/QmlTests.dir/build
+.PHONY : QmlTests/fast
+
+#=============================================================================
+# Target rules for targets named ReminderSchedulerTests_autogen_timestamp_deps
+
+# Build rule for target.
+ReminderSchedulerTests_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ReminderSchedulerTests_autogen_timestamp_deps
+.PHONY : ReminderSchedulerTests_autogen_timestamp_deps
+
+# fast build rule for target.
+ReminderSchedulerTests_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ReminderSchedulerTests_autogen_timestamp_deps.dir/build.make tests/CMakeFiles/ReminderSchedulerTests_autogen_timestamp_deps.dir/build
+.PHONY : ReminderSchedulerTests_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named ReminderSchedulerTests_autogen
+
+# Build rule for target.
+ReminderSchedulerTests_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ReminderSchedulerTests_autogen
+.PHONY : ReminderSchedulerTests_autogen
+
+# fast build rule for target.
+ReminderSchedulerTests_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ReminderSchedulerTests_autogen.dir/build.make tests/CMakeFiles/ReminderSchedulerTests_autogen.dir/build
+.PHONY : ReminderSchedulerTests_autogen/fast
+
+#=============================================================================
+# Target rules for targets named PlantRepositoryTests_autogen_timestamp_deps
+
+# Build rule for target.
+PlantRepositoryTests_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PlantRepositoryTests_autogen_timestamp_deps
+.PHONY : PlantRepositoryTests_autogen_timestamp_deps
+
+# fast build rule for target.
+PlantRepositoryTests_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/PlantRepositoryTests_autogen_timestamp_deps.dir/build.make tests/CMakeFiles/PlantRepositoryTests_autogen_timestamp_deps.dir/build
+.PHONY : PlantRepositoryTests_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named PlantRepositoryTests_autogen
+
+# Build rule for target.
+PlantRepositoryTests_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PlantRepositoryTests_autogen
+.PHONY : PlantRepositoryTests_autogen
+
+# fast build rule for target.
+PlantRepositoryTests_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/PlantRepositoryTests_autogen.dir/build.make tests/CMakeFiles/PlantRepositoryTests_autogen.dir/build
+.PHONY : PlantRepositoryTests_autogen/fast
+
+#=============================================================================
+# Target rules for targets named ReminderRepositoryTests_autogen_timestamp_deps
+
+# Build rule for target.
+ReminderRepositoryTests_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ReminderRepositoryTests_autogen_timestamp_deps
+.PHONY : ReminderRepositoryTests_autogen_timestamp_deps
+
+# fast build rule for target.
+ReminderRepositoryTests_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ReminderRepositoryTests_autogen_timestamp_deps.dir/build.make tests/CMakeFiles/ReminderRepositoryTests_autogen_timestamp_deps.dir/build
+.PHONY : ReminderRepositoryTests_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named ReminderRepositoryTests_autogen
+
+# Build rule for target.
+ReminderRepositoryTests_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ReminderRepositoryTests_autogen
+.PHONY : ReminderRepositoryTests_autogen
+
+# fast build rule for target.
+ReminderRepositoryTests_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/ReminderRepositoryTests_autogen.dir/build.make tests/CMakeFiles/ReminderRepositoryTests_autogen.dir/build
+.PHONY : ReminderRepositoryTests_autogen/fast
+
+#=============================================================================
+# Target rules for targets named QmlTests_autogen_timestamp_deps
+
+# Build rule for target.
+QmlTests_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 QmlTests_autogen_timestamp_deps
+.PHONY : QmlTests_autogen_timestamp_deps
+
+# fast build rule for target.
+QmlTests_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/QmlTests_autogen_timestamp_deps.dir/build.make tests/CMakeFiles/QmlTests_autogen_timestamp_deps.dir/build
+.PHONY : QmlTests_autogen_timestamp_deps/fast
+
+#=============================================================================
+# Target rules for targets named QmlTests_autogen
+
+# Build rule for target.
+QmlTests_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 QmlTests_autogen
+.PHONY : QmlTests_autogen
+
+# fast build rule for target.
+QmlTests_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/QmlTests_autogen.dir/build.make tests/CMakeFiles/QmlTests_autogen.dir/build
+.PHONY : QmlTests_autogen/fast
 
 PlantJournal_autogen/mocs_compilation.o: PlantJournal_autogen/mocs_compilation.cpp.o
 .PHONY : PlantJournal_autogen/mocs_compilation.o
@@ -512,10 +678,23 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... PlantJournal_autogen"
 	@echo "... PlantJournal_autogen_timestamp_deps"
 	@echo "... PlantJournal_qmlimportscan"
+	@echo "... PlantRepositoryTests_autogen"
+	@echo "... PlantRepositoryTests_autogen_timestamp_deps"
+	@echo "... QmlTests_autogen"
+	@echo "... QmlTests_autogen_timestamp_deps"
+	@echo "... ReminderRepositoryTests_autogen"
+	@echo "... ReminderRepositoryTests_autogen_timestamp_deps"
+	@echo "... ReminderSchedulerTests_autogen"
+	@echo "... ReminderSchedulerTests_autogen_timestamp_deps"
 	@echo "... PlantJournal"
+	@echo "... PlantRepositoryTests"
+	@echo "... QmlTests"
+	@echo "... ReminderRepositoryTests"
+	@echo "... ReminderSchedulerTests"
 	@echo "... PlantJournal_autogen/mocs_compilation.o"
 	@echo "... PlantJournal_autogen/mocs_compilation.i"
 	@echo "... PlantJournal_autogen/mocs_compilation.s"

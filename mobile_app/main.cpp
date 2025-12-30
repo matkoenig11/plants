@@ -1,14 +1,14 @@
+#include <QCoreApplication>
+#include <QDir>
+#include <QFile>
 #include <QGuiApplication>
-#include <QQuickStyle>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QFile>
-#include <QFileInfo>
-#include <QStandardPaths>
-#include <QDir>
+#include <QQuickStyle>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QStandardPaths>
 
 #include "MigrationRunner.h"
 #include "PlantListViewModel.h"
@@ -38,17 +38,17 @@ bool ensureWritableDir(const QString &dirPath)
 
 QString databasePath()
 {
-    const QString overridePath = qEnvironmentVariable("PLANT_JOURNAL_DB_PATH");
-    if (!overridePath.isEmpty()) {
-        return overridePath;
-    }
+    // const QString overridePath = qEnvironmentVariable("PLANT_JOURNAL_DB_PATH");
+    // if (!overridePath.isEmpty()) {
+    //     return overridePath;
+    // }
 
-    const QString baseDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    if (ensureWritableDir(baseDir)) {
-        return QDir(baseDir).filePath("plant_journal.sqlite");
-    }
+    // const QString baseDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    // if (ensureWritableDir(baseDir)) {
+    //     return QDir(baseDir).filePath("plant_journal.sqlite");
+    // }
 
-    return QDir::current().filePath("plant_journal.sqlite");
+    return QDir::current().filePath("../../plant_journal.sqlite");
 }
 
 bool seedPlantsIfEmpty(QSqlDatabase &db)
@@ -90,16 +90,21 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QString databasePathStr = databasePath();
+    qDebug() << "Using database path:" << databasePathStr;
     db.setDatabaseName(databasePath());
     if (!db.open()) {
         qWarning("Failed to open SQLite database.");
-    } else {
-        MigrationRunner runner;
-        if (!runner.run(db)) {
-            qWarning("Failed to apply migrations.");
-        }
-        seedPlantsIfEmpty(db);
+    // } else {
+    //     MigrationRunner runner;
+    //     if (!runner.run(db)) {
+    //         qWarning("Failed to apply migrations.");
+    //     }
+    //     seedPlantsIfEmpty(db);
     }
+
+
+
 
     PlantListViewModel plantListViewModel(db);
     JournalEntryListViewModel journalEntryViewModel(db);
@@ -111,7 +116,8 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("journalEntryViewModel", &journalEntryViewModel);
     engine.rootContext()->setContextProperty("reminderListViewModel", &reminderListViewModel);
     engine.rootContext()->setContextProperty("reminderSettingsViewModel", &reminderSettingsViewModel);
-    const QUrl url(QStringLiteral("qrc:/app/Main.qml"));
+
+    const QUrl url(QStringLiteral("qrc:/mobile_app/Main.qml"));
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreated,

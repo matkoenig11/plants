@@ -47,5 +47,8 @@ Keep UI (QML) separate from backend (C++ services + SQLite).
 - Integration tests: repo + migrations + ViewModel flows.
 - CI: build + ctest, use offscreen QML where needed.
 
+# Design references
+- Mobile/UI guidance and external links are collected in `design_mobile.md` (see References section) for quick lookup.
+
 # Initial data source
 The inital data can be found in the plants_populated.xlsx file. 

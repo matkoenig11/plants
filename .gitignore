@@ -1,5 +1,6 @@
 # Build artifacts
 /build/
+/build*/
 /CMakeFiles/
 /CMakeCache.txt
 /cmake_install.cmake
@@ -39,3 +40,4 @@ plant_journal.sqlite
 
 # Logs
 *.log
+*.tlog

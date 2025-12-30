@@ -24,37 +24,64 @@ Frame {
             model: root.plantModel
             delegate: ItemDelegate {
                 width: ListView.view.width
-                text: model.name
+                required property int id
+                required property string name
+                required property string scientificName
+                required property string plantType
+                required property string winterLocation
+                required property string summerLocation
+                required property string lightRequirement
+                required property string wateringFrequency
+                required property string wateringNotes
+                required property string humidityPreference
+                required property string soilType
+                required property string potSize
+                required property string lastWatered
+                required property string fertilizingSchedule
+                required property string lastFertilized
+                required property string pruningTime
+                required property string pruningNotes
+                required property string lastPruned
+                required property string growthRate
+                required property string currentHealthStatus
+                required property string issuesPests
+                required property string temperatureTolerance
+                required property string toxicToPets
+                required property string acquiredDate
+                required property string source
+                required property string notes
+
+                text: name
                 highlighted: ListView.isCurrentItem
                 onClicked: {
                     plantList.currentIndex = index
                     root.plantSelected({
-                        id: model.id,
-                        name: model.name,
-                        scientificName: model.scientificName,
-                        plantType: model.plantType,
-                        winterLocation: model.winterLocation,
-                        summerLocation: model.summerLocation,
-                        lightRequirement: model.lightRequirement,
-                        wateringFrequency: model.wateringFrequency,
-                        wateringNotes: model.wateringNotes,
-                        humidityPreference: model.humidityPreference,
-                        soilType: model.soilType,
-                        potSize: model.potSize,
-                        lastWatered: model.lastWatered,
-                        fertilizingSchedule: model.fertilizingSchedule,
-                        lastFertilized: model.lastFertilized,
-                        pruningTime: model.pruningTime,
-                        pruningNotes: model.pruningNotes,
-                        lastPruned: model.lastPruned,
-                        growthRate: model.growthRate,
-                        currentHealthStatus: model.currentHealthStatus,
-                        issuesPests: model.issuesPests,
-                        temperatureTolerance: model.temperatureTolerance,
-                        toxicToPets: model.toxicToPets,
-                        acquiredDate: model.acquiredDate,
-                        source: model.source,
-                        notes: model.notes
+                        id: id,
+                        name: name,
+                        scientificName: scientificName,
+                        plantType: plantType,
+                        winterLocation: winterLocation,
+                        summerLocation: summerLocation,
+                        lightRequirement: lightRequirement,
+                        wateringFrequency: wateringFrequency,
+                        wateringNotes: wateringNotes,
+                        humidityPreference: humidityPreference,
+                        soilType: soilType,
+                        potSize: potSize,
+                        lastWatered: lastWatered,
+                        fertilizingSchedule: fertilizingSchedule,
+                        lastFertilized: lastFertilized,
+                        pruningTime: pruningTime,
+                        pruningNotes: pruningNotes,
+                        lastPruned: lastPruned,
+                        growthRate: growthRate,
+                        currentHealthStatus: currentHealthStatus,
+                        issuesPests: issuesPests,
+                        temperatureTolerance: temperatureTolerance,
+                        toxicToPets: toxicToPets,
+                        acquiredDate: acquiredDate,
+                        source: source,
+                        notes: notes
                     })
                 }
             }

@@ -118,6 +118,7 @@ void PlantListViewModel::refresh()
 {
     beginResetModel();
     m_plants = m_repository.listAll();
+    qDebug() << "Loaded" << m_plants.size() << "plants from database.";
     endResetModel();
     setLastError(QString());
 }

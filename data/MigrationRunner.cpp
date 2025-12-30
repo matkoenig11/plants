@@ -126,6 +126,7 @@ QStringList MigrationRunner::migrations() const
         ":/migrations/001_init.sql",
         ":/migrations/002_add_plant_fields.sql",
         ":/migrations/003_reminders_multi.sql",
-        ":/migrations/004_add_reminder_name.sql"
+        ":/migrations/004_add_reminder_name.sql",
+        ":/migrations/005_seed_plants.sql"
     };
 }

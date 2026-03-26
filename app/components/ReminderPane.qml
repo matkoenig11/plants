@@ -2,9 +2,11 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
+import "../../ui"
 
 Frame {
     id: root
+    AppConstants { id: ui }
 
     property var reminderModel
     property var plantModel
@@ -66,11 +68,11 @@ Frame {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 12
+        spacing: ui.spacing_large
 
         Label {
             text: "Reminders"
-            font.pixelSize: 18
+            font.pixelSize: ui.point_size_medium
         }
 
         Label {
@@ -89,7 +91,7 @@ Frame {
                 SplitView.preferredWidth: 300
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 8
+                    spacing: ui.spacing_medium
 
                     Label { text: "Existing" }
 
@@ -128,8 +130,8 @@ Frame {
                     GridLayout {
                         Layout.fillWidth: true
                         columns: 2
-                        rowSpacing: 8
-                        columnSpacing: 12
+                        rowSpacing: ui.spacing_medium
+                        columnSpacing: ui.spacing_large
 
                         Label { text: "Custom name" }
                         TextField { id: customNameField; placeholderText: "Morning water" }
@@ -176,7 +178,7 @@ Frame {
                         Label { text: "Notes" }
                         TextArea {
                             id: notesField
-                            Layout.preferredHeight: 80
+                            Layout.preferredHeight: ui.notes_text_area_height
                             Layout.fillWidth: true
                             wrapMode: TextEdit.Wrap
                         }
@@ -186,7 +188,7 @@ Frame {
 
                     ListView {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 160
+                        Layout.preferredHeight: ui.standard_panel_height
                         model: plantModel
                         delegate: CheckDelegate {
                             width: ListView.view.width
@@ -198,7 +200,7 @@ Frame {
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: ui.spacing_medium
 
                         Button {
                             text: "Add"
@@ -240,15 +242,15 @@ Frame {
             Layout.fillWidth: true
             ColumnLayout {
                 anchors.fill: parent
-                spacing: 8
+                spacing: ui.spacing_medium
 
                 Label { text: "Delivery Settings" }
 
                 GridLayout {
                     Layout.fillWidth: true
                     columns: 4
-                    rowSpacing: 8
-                    columnSpacing: 12
+                    rowSpacing: ui.spacing_medium
+                    columnSpacing: ui.spacing_large
 
                     Label { text: "Day before" }
                     Switch { checked: settingsModel.dayBeforeEnabled; onToggled: settingsModel.dayBeforeEnabled = checked }
@@ -269,7 +271,7 @@ Frame {
                     TextField { text: settingsModel.overdueTime; onEditingFinished: settingsModel.overdueTime = text }
                     Label { text: "Quiet hours" }
                     RowLayout {
-                        spacing: 6
+                        spacing: ui.spacing_small
                         TextField { text: settingsModel.quietHoursStart; placeholderText: "22:00"; onEditingFinished: settingsModel.quietHoursStart = text }
                         TextField { text: settingsModel.quietHoursEnd; placeholderText: "07:00"; onEditingFinished: settingsModel.quietHoursEnd = text }
                     }
@@ -277,7 +279,7 @@ Frame {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: ui.spacing_medium
 
                     Label {
                         text: settingsModel.lastError

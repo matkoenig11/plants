@@ -1,75 +1,117 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import "../../ui"
 
 Page {
+    id: root
+    AppConstants { id: ui }
 
-    ListModel {
-        id: journalModel
-        ListElement { action: "Water"; plant: "Monstera"; note: "Thorough soak"; when: "Today 09:00" }
-        ListElement { action: "Prune"; plant: "Fiddle Leaf"; note: "Removed yellow leaf"; when: "Yesterday" }
-        ListElement { action: "Fertilize"; plant: "Snake Plant"; note: "Half strength"; when: "Sun" }
+    property int plantId: -1
+    property string plantName: ""
+    property var stackView: null
+
+    function loadJournal() {
+        if (typeof journalEntryViewModel === "undefined" || plantId <= 0)
+            return;
+        journalEntryViewModel.setPlantId(plantId);
+        journalEntryViewModel.refresh();
+    }
+
+    Component.onCompleted: loadJournal()
+    onPlantIdChanged: loadJournal()
+
+    header: ToolBar {
+        RowLayout {
+            anchors.fill: parent
+            spacing: ui.spacing_medium
+
+            ToolButton {
+                text: qsTr("Back")
+                onClicked: {
+                    if (root.stackView) {
+                        root.stackView.pop()
+                    } else if (StackView.view) {
+                        StackView.view.pop()
+                    }
+                }
+            }
+
+            Label {
+                text: root.plantName.length > 0 ? root.plantName : qsTr("Journal")
+                font.pixelSize: ui.point_size_medium
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+            }
+        }
     }
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 0
+        spacing: ui.spacing_medium
+        anchors.margins: ui.margin_large
 
-        Column {
-            padding: 16
-            spacing: 8
-            Label { text: qsTr("Journal"); font.pixelSize: 22 }
-            RowLayout {
-                spacing: 8
-                Repeater {
-                    model: ["All", "Water", "Prune", "Fertilize", "Repot"]
-                    delegate: CheckBox {
-                        text: modelData
-                        checked: index === 0
-                        onClicked: console.log("Filter", modelData)
+        Label {
+            text: qsTr("Journal")
+            font.pixelSize: ui.point_size_large
+        }
+
+        Label {
+            text: qsTr("Watering and fertilizing history")
+            font.pixelSize: ui.point_size_small
+            color: "#666666"
+        }
+
+        Label {
+            text: journalEntryViewModel.lastError
+            visible: text.length > 0
+            color: "red"
+            wrapMode: Text.Wrap
+            Layout.fillWidth: true
+        }
+
+        ListView {
+            id: journalList
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip: true
+            model: journalEntryViewModel
+            spacing: ui.spacing_small
+
+            delegate: ItemDelegate {
+                width: ListView.view.width
+                required property string entryType
+                required property string entryDate
+                required property string notes
+
+                readonly property bool supportedType: entryType === "Water" || entryType === "Fertilize"
+                visible: supportedType
+                height: supportedType ? implicitHeight : 0
+
+                contentItem: ColumnLayout {
+                    spacing: ui.spacing_small
+
+                    Label {
+                        text: entryType + " • " + entryDate
+                        font.pixelSize: ui.point_size_medium
+                    }
+
+                    Label {
+                        text: notes
+                        visible: notes.length > 0
+                        wrapMode: Text.Wrap
+                        color: "#666666"
                     }
                 }
             }
         }
 
-        ListView {
+        Label {
+            text: qsTr("No journal entries yet.")
+            visible: journalList.count === 0
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            model: journalModel
-            clip: true
-            delegate: Item {
-                width: ListView.view.width
-                height: 80
-
-                Rectangle {
-                    anchors.fill: parent
-                    anchors.margins: 12
-                    radius: 12
-                    color: "#ffffff"
-                    border.color: "#e6e6e0"
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 10
-
-                        Rectangle {
-                            width: 36; height: 36; radius: 10
-                            color: "#e5f3ec"
-                            Label {
-                                anchors.centerIn: parent
-                                text: action.charAt(0)
-                                color: "#2e9a5b"
-                            }
-                        }
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            Label { text: action + " · " + plant; font.pixelSize: 16; font.bold: true }
-                            Label { text: note; color: "#555"; font.pixelSize: 13 }
-                            Label { text: when; color: "#777"; font.pixelSize: 12 }
-                        }
-                    }
-                }
-            }
+            horizontalAlignment: Text.AlignHCenter
+            color: "#666666"
         }
     }
 }

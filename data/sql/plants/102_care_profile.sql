@@ -1,0 +1,11 @@
+ALTER TABLE plants ADD COLUMN light_requirement TEXT;
+ALTER TABLE plants ADD COLUMN watering_frequency TEXT;
+ALTER TABLE plants ADD COLUMN watering_notes TEXT;
+ALTER TABLE plants ADD COLUMN humidity_preference TEXT;
+ALTER TABLE plants ADD COLUMN soil_type TEXT;
+ALTER TABLE plants ADD COLUMN last_watered TEXT;
+ALTER TABLE plants ADD COLUMN fertilizing_schedule TEXT;
+ALTER TABLE plants ADD COLUMN last_fertilized TEXT;
+ALTER TABLE plants ADD COLUMN pruning_time TEXT;
+ALTER TABLE plants ADD COLUMN pruning_notes TEXT;
+ALTER TABLE plants ADD COLUMN last_pruned TEXT;

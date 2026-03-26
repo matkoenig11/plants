@@ -19,7 +19,6 @@ Page {
         Label {
             text: qsTr("Plants")
             font.pixelSize: 22
-            padding: 16
         }
 
         ListView {
@@ -68,7 +67,6 @@ Page {
                                     border.color: status === "Water today" ? "#ffb347" : "#cfd6ff"
                                     anchors.verticalCenter: parent.verticalCenter
                                     Label {
-                                        padding: 6
                                         text: status
                                         font.pixelSize: 12
                                     }

@@ -2,9 +2,11 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
+import "../../ui"
 
 Frame {
     id: root
+    AppConstants { id: ui }
 
     property var entryModel
     property int plantId: -1
@@ -24,11 +26,11 @@ Frame {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 12
+        spacing: ui.spacing_large
 
         Label {
             text: "Journal"
-            font.pixelSize: 18
+            font.pixelSize: ui.point_size_medium
         }
 
         Label {
@@ -41,11 +43,10 @@ Frame {
         ListView {
             id: entryList
             Layout.fillWidth: true
-            Layout.preferredHeight: 180
+            Layout.preferredHeight: ui.journal_list_height
             model: root.entryModel
             delegate: ItemDelegate {
                 width: ListView.view.width
-                padding: 8
                 onClicked: {
                     root.selectedEntryId = model.id
                     typeField.editText = model.entryType
@@ -55,7 +56,7 @@ Frame {
 
                 RowLayout {
                     anchors.fill: parent
-                    spacing: 8
+                    spacing: ui.spacing_medium
 
                     ColumnLayout {
                         Layout.fillWidth: true
@@ -74,8 +75,8 @@ Frame {
         GridLayout {
             Layout.fillWidth: true
             columns: 2
-            rowSpacing: 8
-            columnSpacing: 12
+            rowSpacing: ui.spacing_medium
+            columnSpacing: ui.spacing_large
 
             Label { text: "Type" }
             ComboBox {
@@ -91,7 +92,7 @@ Frame {
             Label { text: "Notes" }
             TextArea {
                 id: notesField
-                Layout.preferredHeight: 80
+                Layout.preferredHeight: ui.notes_text_area_height
                 Layout.fillWidth: true
                 wrapMode: TextEdit.Wrap
             }
@@ -99,7 +100,7 @@ Frame {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: ui.spacing_medium
 
             Button {
                 text: "Add Entry"

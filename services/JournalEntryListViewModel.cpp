@@ -107,6 +107,7 @@ int JournalEntryListViewModel::addEntry(int plantId,
     }
 
     setLastError(QString());
+    emit entriesChanged(plantId);
     return id;
 }
 
@@ -125,6 +126,7 @@ bool JournalEntryListViewModel::updateEntry(int id,
         return false;
     }
 
+    const JournalEntry previousEntry = m_repository.findById(id);
     JournalEntry entry = makeEntry(id, plantId, entryType, entryDateIso, notes);
     if (!m_repository.update(entry)) {
         setLastError(QStringLiteral("Failed to update journal entry."));
@@ -141,6 +143,10 @@ bool JournalEntryListViewModel::updateEntry(int id,
     }
 
     setLastError(QString());
+    if (previousEntry.plantId > 0 && previousEntry.plantId != plantId) {
+        emit entriesChanged(previousEntry.plantId);
+    }
+    emit entriesChanged(plantId);
     return true;
 }
 
@@ -151,6 +157,7 @@ bool JournalEntryListViewModel::removeEntry(int id)
         return false;
     }
 
+    const JournalEntry entry = m_repository.findById(id);
     if (!m_repository.remove(id)) {
         setLastError(QStringLiteral("Failed to delete journal entry."));
         return false;
@@ -166,6 +173,9 @@ bool JournalEntryListViewModel::removeEntry(int id)
     }
 
     setLastError(QString());
+    if (entry.plantId > 0) {
+        emit entriesChanged(entry.plantId);
+    }
     return true;
 }
 

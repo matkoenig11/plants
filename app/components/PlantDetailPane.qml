@@ -2,9 +2,11 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
+import "../../ui"
 
 Frame {
     id: root
+    AppConstants { id: ui }
 
     property int plantId: -1
     property var plantData
@@ -21,14 +23,13 @@ Frame {
             name: nameField.text,
             scientificName: scientificNameField.text,
             plantType: plantTypeField.text,
-            winterLocation: winterLocationField.text,
-            summerLocation: summerLocationField.text,
             lightRequirement: lightRequirementField.text,
+            indoor: indoorField.text,
+            floweringSeason: floweringSeasonField.text,
             wateringFrequency: wateringFrequencyField.text,
             wateringNotes: wateringNotesField.text,
             humidityPreference: humidityPreferenceField.text,
             soilType: soilTypeField.text,
-            potSize: potSizeField.text,
             lastWatered: lastWateredField.text,
             fertilizingSchedule: fertilizingScheduleField.text,
             lastFertilized: lastFertilizedField.text,
@@ -36,10 +37,11 @@ Frame {
             pruningNotes: pruningNotesField.text,
             lastPruned: lastPrunedField.text,
             growthRate: growthRateField.text,
-            currentHealthStatus: currentHealthStatusField.text,
             issuesPests: issuesPestsField.text,
             temperatureTolerance: temperatureToleranceField.text,
             toxicToPets: toxicToPetsField.text,
+            poisonousToHumans: poisonousToHumansField.text,
+            poisonousToPets: poisonousToPetsField.text,
             acquiredDate: acquiredDateField.text,
             source: sourceField.text,
             notes: notesField.text
@@ -50,14 +52,13 @@ Frame {
         nameField.text = ""
         scientificNameField.text = ""
         plantTypeField.text = ""
-        winterLocationField.text = ""
-        summerLocationField.text = ""
         lightRequirementField.text = ""
+        indoorField.text = ""
+        floweringSeasonField.text = ""
         wateringFrequencyField.text = ""
         wateringNotesField.text = ""
         humidityPreferenceField.text = ""
         soilTypeField.text = ""
-        potSizeField.text = ""
         lastWateredField.text = ""
         fertilizingScheduleField.text = ""
         lastFertilizedField.text = ""
@@ -65,10 +66,11 @@ Frame {
         pruningNotesField.text = ""
         lastPrunedField.text = ""
         growthRateField.text = ""
-        currentHealthStatusField.text = ""
         issuesPestsField.text = ""
         temperatureToleranceField.text = ""
         toxicToPetsField.text = ""
+        poisonousToHumansField.text = ""
+        poisonousToPetsField.text = ""
         acquiredDateField.text = ""
         sourceField.text = ""
         notesField.text = ""
@@ -82,14 +84,13 @@ Frame {
         nameField.text = plantData.name || ""
         scientificNameField.text = plantData.scientificName || ""
         plantTypeField.text = plantData.plantType || ""
-        winterLocationField.text = plantData.winterLocation || ""
-        summerLocationField.text = plantData.summerLocation || ""
         lightRequirementField.text = plantData.lightRequirement || ""
+        indoorField.text = plantData.indoor || ""
+        floweringSeasonField.text = plantData.floweringSeason || ""
         wateringFrequencyField.text = plantData.wateringFrequency || ""
         wateringNotesField.text = plantData.wateringNotes || ""
         humidityPreferenceField.text = plantData.humidityPreference || ""
         soilTypeField.text = plantData.soilType || ""
-        potSizeField.text = plantData.potSize || ""
         lastWateredField.text = plantData.lastWatered || ""
         fertilizingScheduleField.text = plantData.fertilizingSchedule || ""
         lastFertilizedField.text = plantData.lastFertilized || ""
@@ -97,10 +98,11 @@ Frame {
         pruningNotesField.text = plantData.pruningNotes || ""
         lastPrunedField.text = plantData.lastPruned || ""
         growthRateField.text = plantData.growthRate || ""
-        currentHealthStatusField.text = plantData.currentHealthStatus || ""
         issuesPestsField.text = plantData.issuesPests || ""
         temperatureToleranceField.text = plantData.temperatureTolerance || ""
         toxicToPetsField.text = plantData.toxicToPets || ""
+        poisonousToHumansField.text = plantData.poisonousToHumans || ""
+        poisonousToPetsField.text = plantData.poisonousToPets || ""
         acquiredDateField.text = plantData.acquiredDate || ""
         sourceField.text = plantData.source || ""
         notesField.text = plantData.notes || ""
@@ -108,11 +110,11 @@ Frame {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 12
+        spacing: ui.spacing_large
 
         Label {
             text: "Details"
-            font.pixelSize: 20
+            font.pixelSize: ui.point_size_large
         }
 
         Label {
@@ -125,16 +127,19 @@ Frame {
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            contentWidth: formLayout.width
 
             ColumnLayout {
-                width: parent.width
-                spacing: 12
+                id: formLayout
+                width: Math.min(parent.width * 0.66, parent.width)
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: ui.spacing_large
 
                 GridLayout {
                     Layout.fillWidth: true
                     columns: 2
-                    rowSpacing: 8
-                    columnSpacing: 12
+                    rowSpacing: ui.spacing_medium
+                    columnSpacing: ui.spacing_large
 
                     Label { text: "Name" }
                     TextField { id: nameField; placeholderText: "Calathea" }
@@ -145,14 +150,14 @@ Frame {
                     Label { text: "Plant Type" }
                     TextField { id: plantTypeField; placeholderText: "Houseplant" }
 
-                    Label { text: "Winter Location" }
-                    TextField { id: winterLocationField; placeholderText: "Indoors" }
-
-                    Label { text: "Summer Location" }
-                    TextField { id: summerLocationField; placeholderText: "" }
-
                     Label { text: "Light Requirement" }
                     TextField { id: lightRequirementField; placeholderText: "Bright indirect" }
+
+                    Label { text: "Indoor" }
+                    TextField { id: indoorField; placeholderText: "Yes/No/Sometimes" }
+
+                    Label { text: "Flowering Season" }
+                    TextField { id: floweringSeasonField; placeholderText: "Spring to summer" }
 
                     Label { text: "Watering Frequency" }
                     TextField { id: wateringFrequencyField; placeholderText: "1-2x/week" }
@@ -160,7 +165,7 @@ Frame {
                     Label { text: "Watering Notes" }
                     TextArea {
                         id: wateringNotesField
-                        Layout.preferredHeight: 60
+                        Layout.preferredHeight: ui.form_text_area_height
                         Layout.fillWidth: true
                         wrapMode: TextEdit.Wrap
                     }
@@ -170,9 +175,6 @@ Frame {
 
                     Label { text: "Soil Type" }
                     TextField { id: soilTypeField; placeholderText: "" }
-
-                    Label { text: "Pot Size" }
-                    TextField { id: potSizeField; placeholderText: "" }
 
                     Label { text: "Last Watered" }
                     TextField { id: lastWateredField; placeholderText: "YYYY-MM-DD" }
@@ -189,7 +191,7 @@ Frame {
                     Label { text: "Pruning Notes" }
                     TextArea {
                         id: pruningNotesField
-                        Layout.preferredHeight: 60
+                        Layout.preferredHeight: ui.form_text_area_height
                         Layout.fillWidth: true
                         wrapMode: TextEdit.Wrap
                     }
@@ -200,13 +202,10 @@ Frame {
                     Label { text: "Growth Rate" }
                     TextField { id: growthRateField; placeholderText: "" }
 
-                    Label { text: "Current Health Status" }
-                    TextField { id: currentHealthStatusField; placeholderText: "" }
-
                     Label { text: "Issues / Pests" }
                     TextArea {
                         id: issuesPestsField
-                        Layout.preferredHeight: 60
+                        Layout.preferredHeight: ui.form_text_area_height
                         Layout.fillWidth: true
                         wrapMode: TextEdit.Wrap
                     }
@@ -217,6 +216,12 @@ Frame {
                     Label { text: "Toxic to Pets" }
                     TextField { id: toxicToPetsField; placeholderText: "Yes/No/Unknown" }
 
+                    Label { text: "Poisonous to Humans" }
+                    TextField { id: poisonousToHumansField; placeholderText: "Yes/No/Unknown" }
+
+                    Label { text: "Poisonous to Pets" }
+                    TextField { id: poisonousToPetsField; placeholderText: "Yes/No/Unknown" }
+
                     Label { text: "Acquired Date" }
                     TextField { id: acquiredDateField; placeholderText: "YYYY-MM-DD" }
 
@@ -226,7 +231,7 @@ Frame {
                     Label { text: "Personal Notes" }
                     TextArea {
                         id: notesField
-                        Layout.preferredHeight: 80
+                        Layout.preferredHeight: ui.notes_text_area_height
                         Layout.fillWidth: true
                         wrapMode: TextEdit.Wrap
                     }
@@ -236,7 +241,7 @@ Frame {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: ui.spacing_medium
 
             Button {
                 text: "Add"
@@ -258,7 +263,7 @@ Frame {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: ui.spacing_medium
 
             Button {
                 text: "Log Watered"

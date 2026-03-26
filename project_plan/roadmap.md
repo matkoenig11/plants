@@ -11,6 +11,6 @@
 - Notification scheduling for reminders.
 
 ## Later
-- Import from `plants_populated.xlsx`.
+- Import seed/reference data from `plants_populated.xlsx`.
 - Notifications (desktop alerts) for due reminders.
 - Analytics and history summaries.

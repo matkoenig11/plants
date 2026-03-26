@@ -1,0 +1,9 @@
+********* Start testing of MigrationRunnerTest *********
+Config: Using QtTest library 6.8.2, Qt 6.8.2 (x86_64-little_endian-llp64 shared (dynamic) debug build; by MSVC 2022), windows 11
+PASS   : MigrationRunnerTest::initTestCase()
+PASS   : MigrationRunnerTest::run_appliesSyncMetadata()
+PASS   : MigrationRunnerTest::run_recoversFromPartialSyncMigration()
+PASS   : MigrationRunnerTest::run_usesDeletionTimeForTombstones()
+PASS   : MigrationRunnerTest::cleanupTestCase()
+Totals: 5 passed, 0 failed, 0 skipped, 0 blacklisted, 60ms
+********* Finished testing of MigrationRunnerTest *********

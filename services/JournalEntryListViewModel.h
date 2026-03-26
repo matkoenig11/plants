@@ -47,6 +47,7 @@ public:
 signals:
     void plantIdChanged();
     void lastErrorChanged();
+    void entriesChanged(int plantId);
 
 private:
     bool validateInput(int plantId, const QString &entryType, const QString &entryDateIso);

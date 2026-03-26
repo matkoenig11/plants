@@ -1,0 +1,186 @@
+********* Start testing of PostgresDriverTests *********
+Config: Using QtTest library 6.8.2, Qt 6.8.2 (x86_64-little_endian-llp64 shared (dynamic) debug build; by MSVC 2022), windows 11
+PASS   : PostgresDriverTests::initTestCase()
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: checking directory path "C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers" ...
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlite.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlite.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QSQLITE"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QSQLiteDriverPlugin",
+    "debug": false,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: "The plugin 'C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlite.dll' uses incompatible Qt library. (Cannot mix debug and release libraries.)" 
+         not a plugin
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlited.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlited.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QSQLITE"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QSQLiteDriverPlugin",
+    "debug": true,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: Got keys from plugin meta data QList("QSQLITE")
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlmimer.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlmimer.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QMIMER"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QMimerSQLDriverPlugin",
+    "debug": false,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: "The plugin 'C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlmimer.dll' uses incompatible Qt library. (Cannot mix debug and release libraries.)" 
+         not a plugin
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlmimerd.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlmimerd.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QMIMER"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QMimerSQLDriverPlugin",
+    "debug": true,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: Got keys from plugin meta data QList("QMIMER")
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlodbc.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlodbc.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QODBC"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QODBCDriverPlugin",
+    "debug": false,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: "The plugin 'C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlodbc.dll' uses incompatible Qt library. (Cannot mix debug and release libraries.)" 
+         not a plugin
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlodbcd.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlodbcd.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QODBC"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QODBCDriverPlugin",
+    "debug": true,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: Got keys from plugin meta data QList("QODBC")
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlpsql.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlpsql.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QPSQL"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QPSQLDriverPlugin",
+    "debug": false,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: "The plugin 'C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlpsql.dll' uses incompatible Qt library. (Cannot mix debug and release libraries.)" 
+         not a plugin
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlpsqld.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlpsqld.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QPSQL"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QPSQLDriverPlugin",
+    "debug": true,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: Got keys from plugin meta data QList("QPSQL")
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: checking directory path "C:/Z_Programming_Backup/Programming/plants/build/tests/Debug/sqldrivers" ...
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlite.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Z_Programming_Backup/Programming/plants/build/tests/Debug/sqldrivers/qsqlite.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QSQLITE"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QSQLiteDriverPlugin",
+    "debug": false,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: "The plugin 'C:/Z_Programming_Backup/Programming/plants/build/tests/Debug/sqldrivers/qsqlite.dll' uses incompatible Qt library. (Cannot mix debug and release libraries.)" 
+         not a plugin
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: looking at "qsqlpsql.dll"
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.loader: Found metadata in lib C:/Z_Programming_Backup/Programming/plants/build/tests/Debug/sqldrivers/qsqlpsql.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QSqlDriverFactoryInterface",
+    "MetaData": {
+        "Keys": [
+            "QPSQL"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QPSQLDriverPlugin",
+    "debug": false,
+    "version": 395264
+}
+
+
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.plugin.factoryloader: "The plugin 'C:/Z_Programming_Backup/Programming/plants/build/tests/Debug/sqldrivers/qsqlpsql.dll' uses incompatible Qt library. (Cannot mix debug and release libraries.)" 
+         not a plugin
+QDEBUG : PostgresDriverTests::qpsqlDriverLoads() qt.core.library: "C:/Qt/6.8.2/msvc2022_64/plugins/sqldrivers/qsqlpsqld.dll" loaded library
+PASS   : PostgresDriverTests::qpsqlDriverLoads()
+PASS   : PostgresDriverTests::cleanupTestCase()
+Totals: 3 passed, 0 failed, 0 skipped, 0 blacklisted, 43ms
+********* Finished testing of PostgresDriverTests *********

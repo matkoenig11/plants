@@ -17,7 +17,6 @@ Page {
         spacing: 0
 
         Column {
-            padding: 16
             spacing: 8
             Label { text: qsTr("This week"); font.pixelSize: 22 }
             Label { text: qsTr("Agenda across plants"); color: "#666" }

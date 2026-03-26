@@ -3,11 +3,13 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 1.15
 import "components"
+import "../ui"
 
 ApplicationWindow {
     id: root
-    width: 900
-    height: 600
+    AppConstants { id: ui }
+    width: ui.app_width
+    height: ui.app_height
     visible: true
     title: "Plant Journal"
     property bool darkMode: false
@@ -22,7 +24,7 @@ ApplicationWindow {
         spacing: 0
 
         PlantListPane {
-            Layout.preferredWidth: 260
+            Layout.preferredWidth: ui.sidebar_width
             Layout.fillHeight: true
             plantModel: plantListViewModel
             onPlantSelected: function(plantData) {
@@ -35,11 +37,11 @@ ApplicationWindow {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 8
+            spacing: ui.spacing_medium
 
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: ui.spacing_medium
 
                 Label { text: "Theme" }
 
@@ -70,7 +72,7 @@ ApplicationWindow {
                 Item {
                     ColumnLayout {
                         anchors.fill: parent
-                        spacing: 8
+                        spacing: ui.spacing_medium
 
                         PlantDetailPane {
                             Layout.fillWidth: true
@@ -105,11 +107,11 @@ ApplicationWindow {
 
                         Frame {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 160
+                            Layout.preferredHeight: ui.standard_panel_height
 
                             ColumnLayout {
                                 anchors.fill: parent
-                                spacing: 6
+                                spacing: ui.spacing_small
 
                                 RowLayout {
                                     Layout.fillWidth: true

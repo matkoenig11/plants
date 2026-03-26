@@ -11,6 +11,7 @@
 
 # Qt artifacts
 /*.pro.user
+/*.user
 /.qmake.stash
 *.qmlc
 *.jsc
@@ -20,6 +21,7 @@
 # IDE/editor
 .vscode/
 .idea/
+.vs/
 *.swp
 *.swo
 *~
@@ -41,3 +43,11 @@ plant_journal.sqlite
 # Logs
 *.log
 *.tlog
+
+# Local deployment configuration
+data/configurations/**/.env
+tests/API/.env
+
+# Python virtual environments
+.venv/
+server/.venv/

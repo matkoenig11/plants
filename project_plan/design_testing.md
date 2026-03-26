@@ -16,7 +16,7 @@
 Focus on C++ logic and data mapping.
 
 Recommended units:
-- Repositories: PlantRepository, JournalEntryRepository, ReminderRepository
+- Repositories: plant list persistence in `PlantListViewModel`, `JournalEntryRepository`, `ReminderRepository`
   - CRUD happy path and error cases.
   - Schema migrations applied correctly.
   - Join tables (reminder_plants) handled correctly.

@@ -1,6 +1,8 @@
 #include "JournalEntryRepository.h"
 
+#include <QDebug>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QVariant>
 
 namespace {
@@ -17,6 +19,59 @@ QDate stringToDate(const QString &value)
 QDateTime stringToDateTime(const QString &value)
 {
     return value.isEmpty() ? QDateTime() : QDateTime::fromString(value, Qt::ISODate);
+}
+
+int plantIdForEntry(QSqlDatabase &db, int entryId)
+{
+    QSqlQuery query(db);
+    query.prepare("SELECT plant_id FROM journal_entries WHERE id = :id;");
+    query.bindValue(":id", entryId);
+    if (!query.exec() || !query.next()) {
+        return 0;
+    }
+    return query.value(0).toInt();
+}
+
+bool syncPlantCareDates(QSqlDatabase &db, int plantId)
+{
+    if (!db.isOpen() || plantId <= 0) {
+        return false;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(
+        "UPDATE plants "
+        "SET last_watered = ("
+        "        SELECT MAX(entry_date) FROM journal_entries "
+        "        WHERE plant_id = :plant_id AND lower(entry_type) = 'water'"
+        "    ), "
+        "    last_fertilized = ("
+        "        SELECT MAX(entry_date) FROM journal_entries "
+        "        WHERE plant_id = :plant_id AND lower(entry_type) = 'fertilize'"
+        "    ), "
+        "    updated_at = datetime('now') "
+        "WHERE id = :plant_id;");
+    query.bindValue(":plant_id", plantId);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to sync plant care dates for plant" << plantId << ":"
+                   << query.lastError().text();
+        return false;
+    }
+
+    QSqlQuery verifyQuery(db);
+    verifyQuery.prepare(
+        "SELECT name, last_watered, last_fertilized "
+        "FROM plants WHERE id = :plant_id;");
+    verifyQuery.bindValue(":plant_id", plantId);
+    if (verifyQuery.exec() && verifyQuery.next()) {
+        qDebug() << "Synced plant care dates for plant" << plantId
+                 << verifyQuery.value(0).toString()
+                 << "lastWatered" << verifyQuery.value(1).toString()
+                 << "lastFertilized" << verifyQuery.value(2).toString();
+    }
+
+    return true;
 }
 }
 
@@ -45,7 +100,11 @@ int JournalEntryRepository::create(const JournalEntry &entry)
         return 0;
     }
 
-    return query.lastInsertId().toInt();
+    const int id = query.lastInsertId().toInt();
+    qDebug() << "Created journal entry" << id << "for plant" << entry.plantId
+             << "type" << entry.entryType << "date" << entry.entryDate.toString(Qt::ISODate);
+    syncPlantCareDates(m_db, entry.plantId);
+    return id;
 }
 
 bool JournalEntryRepository::update(const JournalEntry &entry)
@@ -54,6 +113,7 @@ bool JournalEntryRepository::update(const JournalEntry &entry)
         return false;
     }
 
+    const int previousPlantId = plantIdForEntry(m_db, entry.id);
     QSqlQuery query(m_db);
     query.prepare(
         "UPDATE journal_entries "
@@ -67,7 +127,18 @@ bool JournalEntryRepository::update(const JournalEntry &entry)
     query.bindValue(":notes", entry.notes);
     query.bindValue(":id", entry.id);
 
-    return query.exec();
+    if (!query.exec()) {
+        return false;
+    }
+
+    qDebug() << "Updated journal entry" << entry.id << "plant" << previousPlantId
+             << "->" << entry.plantId << "type" << entry.entryType
+             << "date" << entry.entryDate.toString(Qt::ISODate);
+    if (previousPlantId > 0 && previousPlantId != entry.plantId) {
+        syncPlantCareDates(m_db, previousPlantId);
+    }
+    syncPlantCareDates(m_db, entry.plantId);
+    return true;
 }
 
 bool JournalEntryRepository::remove(int id)
@@ -76,10 +147,19 @@ bool JournalEntryRepository::remove(int id)
         return false;
     }
 
+    const int plantId = plantIdForEntry(m_db, id);
     QSqlQuery query(m_db);
     query.prepare("DELETE FROM journal_entries WHERE id = :id;");
     query.bindValue(":id", id);
-    return query.exec();
+    if (!query.exec()) {
+        return false;
+    }
+
+    qDebug() << "Removed journal entry" << id << "for plant" << plantId;
+    if (plantId > 0) {
+        syncPlantCareDates(m_db, plantId);
+    }
+    return true;
 }
 
 JournalEntry JournalEntryRepository::findById(int id)

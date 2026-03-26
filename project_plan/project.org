@@ -51,10 +51,10 @@ Build a local-first plant journal to track plants, care history, and reminders.
 * Data Model
 | Entity           | Fields                                                                                                           |
 |------------------+------------------------------------------------------------------------------------------------------------------|
-| Plant            | id, name, scientific_name, plant_type, winter_location, summer_location, light_requirement, watering_frequency, |
-|                  | watering_notes, humidity_preference, soil_type, pot_size, last_watered, fertilizing_schedule, last_fertilized,  |
-|                  | pruning_time, pruning_notes, last_pruned, growth_rate, current_health_status, issues_pests, temperature_tolerance,|
-|                  | toxic_to_pets, acquired_on, source, notes                                                                         |
+| Plant            | id, name, scientific_name, plant_type, light_requirement, watering_frequency, watering_notes, humidity_preference,|
+|                  | soil_type, last_watered, fertilizing_schedule, last_fertilized, pruning_time, pruning_notes, last_pruned,         |
+|                  | growth_rate, issues_pests, temperature_tolerance, toxic_to_pets, poisonous_to_humans, poisonous_to_pets, indoor, |
+|                  | flowering_season, acquired_on, source, notes                                                                      |
 | JournalEntry     | id, plant_id, entry_type, entry_date, notes                                                                      |
 | Reminder         | id, custom_name, task_type, schedule_type, interval_days, start_date, next_due_date, notes                        |
 | ReminderPlant    | reminder_id, plant_id                                                                                            |

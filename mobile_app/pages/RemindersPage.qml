@@ -15,7 +15,7 @@ Page {
         anchors.fill: parent
         spacing: 0
 
-        Label { text: qsTr("Reminders"); font.pixelSize: 22; padding: 16 }
+        Label { text: qsTr("Reminders"); font.pixelSize: 22 }
 
         ListView {
             Layout.fillWidth: true

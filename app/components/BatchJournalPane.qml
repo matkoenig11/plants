@@ -1,9 +1,11 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import "../../ui"
 
 Frame {
     id: root
+    AppConstants { id: ui }
 
     property var plantModel
     property var selectedIds: []
@@ -31,16 +33,16 @@ Frame {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 12
+        spacing: ui.spacing_large
 
         Label {
             text: "Batch Journal"
-            font.pixelSize: 18
+            font.pixelSize: ui.point_size_medium
         }
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: ui.spacing_medium
 
             Label { text: "Action" }
             ComboBox {
@@ -52,7 +54,7 @@ Frame {
 
             Label { text: "Date" }
             RowLayout {
-                spacing: 6
+                spacing: ui.spacing_small
 
                 TextField {
                     id: dateField
@@ -70,14 +72,14 @@ Frame {
         TextArea {
             id: batchNotesField
             Layout.fillWidth: true
-            Layout.preferredHeight: 80
+            Layout.preferredHeight: ui.notes_text_area_height
             placeholderText: "Notes for all selected plants"
             wrapMode: TextEdit.Wrap
         }
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: ui.spacing_medium
 
             Label {
                 text: root.selectedIds.length + " selected"
@@ -127,13 +129,13 @@ Frame {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: 8
+                anchors.margins: ui.margin_large
+                spacing: ui.spacing_medium
 
                 Label { text: "Pick a date" }
 
                 RowLayout {
-                    spacing: 8
+                    spacing: ui.spacing_medium
                     Label { text: "Year" }
                     SpinBox { id: yearSpin; from: 1970; to: 2100 }
                     Label { text: "Month" }
@@ -144,7 +146,7 @@ Frame {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: ui.spacing_medium
                     Item { Layout.fillWidth: true }
                     Button {
                         text: "Cancel"

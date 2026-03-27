@@ -8,6 +8,17 @@ Page {
     AppConstants { id: ui }
     property var stackView: null
 
+    function syncProviderIndex() {
+        const options = plantLibraryViewModel.providerOptions
+        for (let i = 0; i < options.length; ++i) {
+            if (options[i].providerId === plantLibraryViewModel.provider) {
+                providerCombo.currentIndex = i
+                return
+            }
+        }
+        providerCombo.currentIndex = 0
+    }
+
     header: ToolBar {
         RowLayout {
             anchors.fill: parent
@@ -37,18 +48,48 @@ Page {
         color: "#10171d"
     }
 
+    Component.onCompleted: {
+        syncProviderIndex()
+        tokenField.text = plantLibraryViewModel.token
+    }
+
+    Connections {
+        target: plantLibraryViewModel
+
+        function onProviderChanged() {
+            root.syncProviderIndex()
+            tokenField.text = plantLibraryViewModel.token
+        }
+
+        function onTokenChanged() {
+            tokenField.text = plantLibraryViewModel.token
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: ui.margin_large
         spacing: ui.spacing_medium
 
+        ComboBox {
+            id: providerCombo
+            Layout.fillWidth: true
+            textRole: "displayName"
+            model: plantLibraryViewModel.providerOptions
+            onActivated: {
+                const entry = model[index]
+                if (entry && entry.providerId) {
+                    plantLibraryViewModel.provider = entry.providerId
+                }
+            }
+        }
+
         TextField {
             id: tokenField
             Layout.fillWidth: true
-            placeholderText: qsTr("Perenual token")
+            placeholderText: plantLibraryViewModel.tokenLabel
             echoMode: TextInput.Password
-            text: plantLibraryViewModel.token
-            onTextChanged: plantLibraryViewModel.token = text
+            onTextEdited: plantLibraryViewModel.token = text
         }
 
         RowLayout {
@@ -95,7 +136,7 @@ Page {
                 anchors.margins: ui.margin_medium
                 spacing: ui.spacing_medium
 
-                Label {
+                    Label {
                     text: qsTr("Results")
                     font.pixelSize: ui.point_size_medium
                 }

@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs
 import "../../ui"
+import "../utils/CareFrequency.js" as CareFrequency
 
 Page {
     id: root
@@ -21,6 +22,8 @@ Page {
     readonly property color secondaryTextColor: "#93a5b5"
     readonly property color tileBackgroundColor: "#202c37"
     readonly property color tileBorderColor: "#31404d"
+    readonly property string wateringFrequencyErrorText: qsTr("Use values like 5-7 days, 1 week, once a week, or twice a week.")
+    property var selectedTags: []
 
     component PlantField: TextField {
         Layout.fillWidth: true
@@ -49,6 +52,43 @@ Page {
         }
         const markerIndex = notesText.indexOf(imagesMarker);
         return notesText.slice(0, markerIndex).replace(/\s+$/, "");
+    }
+
+    function parseTags(value) {
+        if (!value)
+            return [];
+
+        const rawParts = value.split(",");
+        const tags = [];
+        for (let i = 0; i < rawParts.length; ++i) {
+            const tag = rawParts[i].trim().toLowerCase();
+            if (tag.length > 0 && tags.indexOf(tag) === -1) {
+                tags.push(tag);
+            }
+        }
+        return tags;
+    }
+
+    function syncSelectedTags() {
+        selectedTags = parseTags(plantData.tags || "");
+    }
+
+    function addSelectedTag(tag) {
+        const normalized = (tag || "").trim().toLowerCase();
+        if (!normalized || selectedTags.indexOf(normalized) !== -1)
+            return;
+        selectedTags = selectedTags.concat([normalized]);
+        tagSearchField.text = "";
+    }
+
+    function removeSelectedTag(tag) {
+        const normalized = (tag || "").trim().toLowerCase();
+        selectedTags = selectedTags.filter(function(item) { return item !== normalized; });
+    }
+
+    function tagSuggestions() {
+        const matches = tagCatalogViewModel.matchingTags(tagSearchField.text);
+        return matches.filter(function(tag) { return selectedTags.indexOf(tag) === -1; });
     }
 
     function reloadImages() {
@@ -102,8 +142,10 @@ Page {
 
     Component.onCompleted: {
         notesField.text = decodeNotes(plantData.notes);
+        syncSelectedTags();
         reloadImages();
     }
+    onPlantDataChanged: syncSelectedTags()
 
     header: ToolBar {
         RowLayout {
@@ -212,6 +254,81 @@ Page {
                     PlantField { id: sourceField; placeholderText: qsTr("Source"); text: plantData.source || "" }
                     PlantField { id: acquiredDateField; placeholderText: qsTr("Acquired date (YYYY-MM-DD)"); text: plantData.acquiredDate || "" }
 
+                    SectionHeader { text: qsTr("Tags") }
+                    Label {
+                        text: selectedTags.length > 0 ? qsTr("Selected tags") : qsTr("No tags selected yet")
+                        Layout.fillWidth: true
+                        color: root.secondaryTextColor
+                    }
+
+                    Flow {
+                        Layout.fillWidth: true
+                        spacing: ui.spacing_small
+
+                        Repeater {
+                            model: selectedTags
+                            delegate: Rectangle {
+                                radius: 14
+                                color: "#243240"
+                                border.color: "#385063"
+                                implicitHeight: 34
+                                implicitWidth: tagRow.implicitWidth + 18
+
+                                Row {
+                                    id: tagRow
+                                    anchors.centerIn: parent
+                                    spacing: 8
+
+                                    Label {
+                                        text: modelData
+                                        color: "white"
+                                    }
+
+                                    ToolButton {
+                                        text: "x"
+                                        onClicked: removeSelectedTag(modelData)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: ui.spacing_medium
+
+                        PlantField {
+                            id: tagSearchField
+                            Layout.fillWidth: true
+                            placeholderText: qsTr("Search existing tags")
+                        }
+
+                        Button {
+                            text: qsTr("Manage")
+                            onClicked: {
+                                const targetStack = root.stackView ? root.stackView : (StackView.view ? StackView.view : null)
+                                if (targetStack) {
+                                    targetStack.push("qrc:/mobile_app/pages/TagManagementPage.qml", {
+                                        stackView: targetStack
+                                    })
+                                }
+                            }
+                        }
+                    }
+
+                    Flow {
+                        Layout.fillWidth: true
+                        spacing: ui.spacing_small
+
+                        Repeater {
+                            model: root.tagSuggestions()
+                            delegate: Button {
+                                text: modelData
+                                onClicked: addSelectedTag(modelData)
+                            }
+                        }
+                    }
+
                     SectionHeader { text: qsTr("Placement") }
                     PlantField { id: lightRequirementField; placeholderText: qsTr("Light requirement"); text: plantData.lightRequirement || "" }
                     PlantField { id: indoorField; placeholderText: qsTr("Indoor"); text: plantData.indoor || "" }
@@ -220,6 +337,14 @@ Page {
 
                     SectionHeader { text: qsTr("Care") }
                     PlantField { id: wateringFrequencyField; placeholderText: qsTr("Watering frequency"); text: plantData.wateringFrequency || "" }
+                    Label {
+                        readonly property var parsedWateringFrequency: CareFrequency.parseWateringFrequency(wateringFrequencyField.text)
+                        visible: wateringFrequencyField.text.trim().length > 0 && !parsedWateringFrequency.valid
+                        text: root.wateringFrequencyErrorText
+                        color: "#ff8a80"
+                        Layout.fillWidth: true
+                        wrapMode: Text.Wrap
+                    }
                     PlantField { id: wateringNotesField; placeholderText: qsTr("Watering notes"); text: plantData.wateringNotes || "" }
                     PlantField { id: lastWateredField; placeholderText: qsTr("Last watered (YYYY-MM-DD)"); text: plantData.lastWatered || "" }
                     PlantField { id: fertilizingScheduleField; placeholderText: qsTr("Fertilizing schedule"); text: plantData.fertilizingSchedule || "" }
@@ -348,6 +473,13 @@ Page {
             return;
         }
 
+        const parsedWateringFrequency = CareFrequency.parseWateringFrequency(wateringFrequencyField.text);
+        if (wateringFrequencyField.text.trim().length > 0 && !parsedWateringFrequency.valid) {
+            statusLabel.text = "";
+            wateringFrequencyField.forceActiveFocus();
+            return;
+        }
+
         const payload = {
             name: nameField.text,
             scientificName: scientificNameField.text,
@@ -355,6 +487,7 @@ Page {
             lightRequirement: lightRequirementField.text,
             indoor: indoorField.text,
             floweringSeason: floweringSeasonField.text,
+            tags: selectedTags.join(", "),
             wateringFrequency: wateringFrequencyField.text,
             wateringNotes: wateringNotesField.text,
             humidityPreference: humidityPreferenceField.text,

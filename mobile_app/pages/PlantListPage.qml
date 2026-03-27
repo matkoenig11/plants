@@ -68,6 +68,15 @@ Page {
             }
         }
 
+        TextField {
+            Layout.fillWidth: true
+            Layout.leftMargin: ui.margin_large
+            Layout.rightMargin: ui.margin_large
+            placeholderText: qsTr("Filter by tags, e.g. indoor or herbs, flowers")
+            text: plantListViewModel.tagFilter
+            onTextEdited: plantListViewModel.tagFilter = text
+        }
+
         ListView {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -80,15 +89,29 @@ Page {
                 required property string lightRequirement
                 required property string wateringFrequency
                 required property string notes
+                required property string tags
                 required property string imageSource
                 required property string thumbnailSource
 
                 contentItem: RowLayout {
                     spacing: ui.spacing_medium
-                    Label {
-                        text: name
+                    ColumnLayout {
                         Layout.fillWidth: true
-                        elide: Text.ElideRight
+                        spacing: 2
+
+                        Label {
+                            text: name
+                            Layout.fillWidth: true
+                            elide: Text.ElideRight
+                        }
+                        Label {
+                            visible: tags.length > 0
+                            text: tags
+                            Layout.fillWidth: true
+                            elide: Text.ElideRight
+                            opacity: 0.75
+                            font.pixelSize: Math.max(11, ui.point_size_small - 1)
+                        }
                     }
                     Image {
                         readonly property string thumbnail: thumbnailSource.length > 0 ? thumbnailSource : imageSource
@@ -109,7 +132,8 @@ Page {
                         name: name,
                         plantType: plantType,
                         lightRequirement: lightRequirement,
-                        wateringFrequency: wateringFrequency
+                        wateringFrequency: wateringFrequency,
+                        tags: tags
                     }, idx)
                 }
             }

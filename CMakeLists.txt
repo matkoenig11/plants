@@ -57,6 +57,7 @@ add_library(PlantJournalBackend STATIC
     services/ReminderScheduler.cpp
     services/DatabaseConnectionViewModel.cpp
     services/PlantLibraryViewModel.cpp
+    services/TagCatalogViewModel.cpp
     services/DatabaseSyncService.cpp
     data/MigrationRunner.cpp
     data/JournalEntryRepository.cpp
@@ -101,6 +102,8 @@ if (true)  # Temporarily force mobile build for testing
             mobile_app/pages/CameraCapturePage.qml
             mobile_app/pages/DatabaseConnectionPage.qml
             mobile_app/pages/LibraryPage.qml
+            mobile_app/pages/TagManagementPage.qml
+            mobile_app/utils/CareFrequency.js
             mobile_app/pages/details/PlantDetailPage.qml
             mobile_app/pages/details/GeneralInfoSection.qml
             mobile_app/pages/details/GeneralCareSection.qml
@@ -120,6 +123,8 @@ if (true)  # Temporarily force mobile build for testing
             data/sql/plants/104_plant_images.sql
             data/sql/plants/105_remove_unused_fields.sql
             data/sql/plants/106_library_fields.sql
+            data/sql/plants/107_tags.sql
+            data/sql/plants/108_tag_catalog.sql
             data/sql/schedules/001_plant_care_schedules.sql
             data/sql/reminders/101_settings.sql
             data/sql/reminders/102_multi_plant_rework.sql
@@ -127,6 +132,7 @@ if (true)  # Temporarily force mobile build for testing
             data/sql/seeds/001_plants.sql
             data/sql/sync/001_sync_metadata.sql
             data/sql/sync/002_tombstone_deletion_timestamps.sql
+            data/sql/sync/003_tag_catalog_sync.sql
     )
 
     target_link_libraries(PlantJournalMobile PRIVATE PlantJournalBackend Qt6::Quick Qt6::QuickControls2 Qt6::Sql Qt6::Multimedia)
@@ -162,6 +168,8 @@ else()
             data/sql/plants/104_plant_images.sql
             data/sql/plants/105_remove_unused_fields.sql
             data/sql/plants/106_library_fields.sql
+            data/sql/plants/107_tags.sql
+            data/sql/plants/108_tag_catalog.sql
             data/sql/schedules/001_plant_care_schedules.sql
             data/sql/reminders/101_settings.sql
             data/sql/reminders/102_multi_plant_rework.sql
@@ -169,6 +177,7 @@ else()
             data/sql/seeds/001_plants.sql
             data/sql/sync/001_sync_metadata.sql
             data/sql/sync/002_tombstone_deletion_timestamps.sql
+            data/sql/sync/003_tag_catalog_sync.sql
     )
 
     target_link_libraries(PlantJournal PRIVATE PlantJournalBackend Qt6::Quick Qt6::QuickControls2 Qt6::Sql)

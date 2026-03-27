@@ -77,6 +77,53 @@ QString dateToString(const QDate &date)
     return date.isValid() ? date.toString(Qt::ISODate) : QString();
 }
 
+QStringList parseTagList(const QString &value)
+{
+    const QStringList rawParts = value.split(QLatin1Char(','), Qt::SkipEmptyParts);
+    QStringList tags;
+    for (const QString &rawPart : rawParts) {
+        const QString tag = rawPart.trimmed();
+        if (!tag.isEmpty() && !tags.contains(tag, Qt::CaseInsensitive)) {
+            tags.append(tag);
+        }
+    }
+    return tags;
+}
+
+QString normalizedTagsString(const QString &value)
+{
+    return parseTagList(value).join(QStringLiteral(", "));
+}
+
+bool plantMatchesTagFilter(const TPlant &plant, const QString &filter)
+{
+    const QString normalizedFilter = filter.trimmed().toLower();
+    if (normalizedFilter.isEmpty()) {
+        return true;
+    }
+
+    const QStringList requiredTags = parseTagList(normalizedFilter);
+    if (requiredTags.isEmpty()) {
+        return true;
+    }
+
+    const QStringList plantTags = parseTagList(plant.tags.toLower());
+    for (const QString &requiredTag : requiredTags) {
+        bool matched = false;
+        for (const QString &plantTag : plantTags) {
+            if (plantTag.contains(requiredTag, Qt::CaseInsensitive)) {
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 QDate stringToDate(const QVariant &value)
 {
     const QString text = value.toString();
@@ -152,6 +199,7 @@ bool ensurePlantsTableExists(QSqlDatabase &db, QString *error = nullptr)
         "poisonous_to_pets TEXT,"
         "indoor TEXT,"
         "flowering_season TEXT,"
+        "tags TEXT,"
         "acquired_on TEXT,"
         "source TEXT,"
         "notes TEXT,"
@@ -276,9 +324,10 @@ TPlant mapPlantRow(const QSqlQuery &query)
     plant.poisonousToPets = query.value(20).toString();
     plant.indoor = query.value(21).toString();
     plant.floweringSeason = query.value(22).toString();
-    plant.acquiredDate = stringToDate(query.value(23));
-    plant.source = query.value(24).toString();
-    plant.notes = query.value(25).toString();
+    plant.tags = query.value(23).toString();
+    plant.acquiredDate = stringToDate(query.value(24));
+    plant.source = query.value(25).toString();
+    plant.notes = query.value(26).toString();
     return plant;
 }
 
@@ -326,7 +375,7 @@ QVector<TPlant> loadPlants(QSqlDatabase &db, QString *error = nullptr)
             "), last_fertilized), "
             "pruning_time, pruning_notes, last_pruned, growth_rate, "
             "issues_pests, temperature_tolerance, toxic_to_pets, poisonous_to_humans, "
-            "poisonous_to_pets, indoor, flowering_season, acquired_on, source, notes "
+            "poisonous_to_pets, indoor, flowering_season, tags, acquired_on, source, notes "
             "FROM plants ORDER BY name COLLATE NOCASE;")) {
         if (error) {
             *error = query.lastError().text();
@@ -447,10 +496,10 @@ bool insertPlant(QSqlDatabase &db, const TPlant &plant, int *insertedId = nullpt
             "light_requirement, watering_frequency, watering_notes, humidity_preference, soil_type, "
             "last_watered, fertilizing_schedule, last_fertilized, pruning_time, pruning_notes, last_pruned, "
             "growth_rate, issues_pests, temperature_tolerance, toxic_to_pets, poisonous_to_humans, "
-            "poisonous_to_pets, indoor, flowering_season, "
+            "poisonous_to_pets, indoor, flowering_season, tags, "
             "acquired_on, source, notes"
             ") VALUES ("
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?"
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?"
             ");")) {
         if (error) {
             *error = query.lastError().text();
@@ -482,6 +531,7 @@ bool insertPlant(QSqlDatabase &db, const TPlant &plant, int *insertedId = nullpt
     query.addBindValue(plant.poisonousToPets);
     query.addBindValue(plant.indoor);
     query.addBindValue(plant.floweringSeason);
+    query.addBindValue(plant.tags);
     query.addBindValue(dateToString(plant.acquiredDate));
     query.addBindValue(plant.source);
     query.addBindValue(plant.notes);
@@ -644,6 +694,7 @@ bool updatePlantRow(QSqlDatabase &db, const TPlant &plant, QString *error = null
         "    poisonous_to_pets = :poisonous_to_pets, "
         "    indoor = :indoor, "
         "    flowering_season = :flowering_season, "
+        "    tags = :tags, "
         "    acquired_on = :acquired_on, "
         "    source = :source, "
         "    notes = :notes, "
@@ -672,6 +723,7 @@ bool updatePlantRow(QSqlDatabase &db, const TPlant &plant, QString *error = null
     query.bindValue(":poisonous_to_pets", plant.poisonousToPets);
     query.bindValue(":indoor", plant.indoor);
     query.bindValue(":flowering_season", plant.floweringSeason);
+    query.bindValue(":tags", plant.tags);
     query.bindValue(":acquired_on", dateToString(plant.acquiredDate));
     query.bindValue(":source", plant.source);
     query.bindValue(":notes", plant.notes);
@@ -858,6 +910,8 @@ QVariant PlantListViewModel::data(const QModelIndex &index, int role) const
         return plant.indoor;
     case FloweringSeasonRole:
         return plant.floweringSeason;
+    case TagsRole:
+        return plant.tags;
     case AcquiredDateRole:
         return plant.acquiredDate.isValid() ? plant.acquiredDate.toString(Qt::ISODate) : QString();
     case SourceRole:
@@ -903,6 +957,7 @@ QHash<int, QByteArray> PlantListViewModel::roleNames() const
         {PoisonousToPetsRole, "poisonousToPets"},
         {IndoorRole, "indoor"},
         {FloweringSeasonRole, "floweringSeason"},
+        {TagsRole, "tags"},
         {AcquiredDateRole, "acquiredDate"},
         {SourceRole, "source"},
         {NotesRole, "notes"},
@@ -924,17 +979,16 @@ QString PlantListViewModel::toUrl(const QString &path) const
 
 void PlantListViewModel::refresh()
 {
-    beginResetModel();
-    m_plants.clear();
     QString error;
     const QVector<TPlant> plants = loadPlants(m_db, &error);
+    m_allPlants.clear();
     for (const TPlant &plant : plants) {
-        m_plants.append(QSharedPointer<Plant>::create(plant));
+        m_allPlants.append(QSharedPointer<Plant>::create(plant));
     }
-    qDebug() << "Loaded" << m_plants.size() << "plants from SQLite.";
-    endResetModel();
-    emit countChanged();
+    qDebug() << "Loaded" << m_allPlants.size() << "plants from SQLite.";
+    applyTagFilter();
     setLastError(error);
+    emit plantsChanged();
 }
 
 int PlantListViewModel::addPlant(const QVariantMap &data)
@@ -951,11 +1005,7 @@ int PlantListViewModel::addPlant(const QVariantMap &data)
         return 0;
     }
 
-    plant.id = id;
-    beginInsertRows(QModelIndex(), m_plants.size(), m_plants.size());
-    m_plants.append(QSharedPointer<Plant>::create(plant));
-    endInsertRows();    
-    emit countChanged();
+    refresh();
     setLastError(QString());
     return id;
 }
@@ -978,15 +1028,7 @@ bool PlantListViewModel::updatePlant(int id, const QVariantMap &data)
         return false;
     }
 
-    for (int i = 0; i < m_plants.size(); ++i) {
-        if (m_plants[i]->id() == id) {
-            m_plants[i]->setData(plant);
-            const QModelIndex modelIndex = index(i);
-            emit dataChanged(modelIndex, modelIndex);
-            break;
-        }
-    }
-
+    refresh();
     setLastError(QString());
     return true;
 }
@@ -1004,16 +1046,7 @@ bool PlantListViewModel::removePlant(int id)
         return false;
     }
 
-    for (int i = 0; i < m_plants.size(); ++i) {
-        if (m_plants[i]->id() == id) {
-            beginRemoveRows(QModelIndex(), i, i);
-            m_plants.removeAt(i);
-            endRemoveRows();
-            break;
-        }
-    }
-    emit countChanged();
-
+    refresh();
     setLastError(QString());
     return true;
 }
@@ -1178,7 +1211,7 @@ QVariantMap PlantListViewModel::careSchedule(int plantId) const
 
     QString legacyWateringText;
     QString legacyFertilizingText;
-    for (const auto &plantPtr : m_plants) {
+    for (const auto &plantPtr : m_allPlants) {
         if (plantPtr->id() == plantId) {
             const TPlant &plant = plantPtr->data();
             legacyWateringText = plant.wateringFrequency;
@@ -1313,6 +1346,22 @@ QString PlantListViewModel::lastError() const
     return m_lastError;
 }
 
+QString PlantListViewModel::tagFilter() const
+{
+    return m_tagFilter;
+}
+
+void PlantListViewModel::setTagFilter(const QString &value)
+{
+    const QString normalized = normalizedTagsString(value);
+    if (m_tagFilter == normalized) {
+        return;
+    }
+    m_tagFilter = normalized;
+    applyTagFilter();
+    emit tagFilterChanged();
+}
+
 bool PlantListViewModel::validateInput(const QVariantMap &data)
 {
     const QString name = data.value("name").toString();
@@ -1351,6 +1400,19 @@ void PlantListViewModel::setLastError(const QString &message)
     emit lastErrorChanged();
 }
 
+void PlantListViewModel::applyTagFilter()
+{
+    beginResetModel();
+    m_plants.clear();
+    for (const auto &plantPtr : m_allPlants) {
+        if (plantMatchesTagFilter(plantPtr->data(), m_tagFilter)) {
+            m_plants.append(plantPtr);
+        }
+    }
+    endResetModel();
+    emit countChanged();
+}
+
 TPlant PlantListViewModel::makePlant(int id, const QVariantMap &data) const
 {
     TPlant plant;
@@ -1377,6 +1439,7 @@ TPlant PlantListViewModel::makePlant(int id, const QVariantMap &data) const
     plant.poisonousToPets = data.value("poisonousToPets").toString();
     plant.indoor = data.value("indoor").toString();
     plant.floweringSeason = data.value("floweringSeason").toString();
+    plant.tags = normalizedTagsString(data.value("tags").toString());
     plant.acquiredDate = QDate::fromString(data.value("acquiredDate").toString(), Qt::ISODate);
     plant.source = data.value("source").toString();
     plant.notes = data.value("notes").toString();

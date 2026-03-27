@@ -8,17 +8,55 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QSettings>
 #include <QTimer>
 #include <QUrl>
 #include <QUrlQuery>
 
 namespace {
+const QString kProviderPerenual = QStringLiteral("perenual");
+const QString kProviderTrefle = QStringLiteral("trefle");
 const QString kPerenualBaseUrl = QStringLiteral("https://perenual.com/api/v2");
 const QString kPerenualCareGuideBaseUrl = QStringLiteral("https://perenual.com/api");
+const QString kTrefleBaseUrl = QStringLiteral("https://trefle.io/api/v1");
+const QString kLibrarySettingsGroup = QStringLiteral("plantLibrary");
+const QString kProviderKey = QStringLiteral("provider");
+const QString kDefaultPerenualToken = QStringLiteral("sk-MEqk69c54942523f615818");
+const QString kDefaultTrefleToken = QStringLiteral("usr-Aj_F5Iuo3w555IqUkYfvizPNXUi3IBV40-lTWWkPXLA");
 
-QString readLocalEnvToken()
+QString tokenSettingsKey(const QString &provider)
 {
-    const QString envValue = qEnvironmentVariable("PERENUAL_TOKEN").trimmed();
+    return provider.trimmed().toLower() + QStringLiteral("Token");
+}
+
+QString normalizedProvider(const QString &provider)
+{
+    const QString normalized = provider.trimmed().toLower();
+    if (normalized == kProviderTrefle) {
+        return kProviderTrefle;
+    }
+    return kProviderPerenual;
+}
+
+QString tokenEnvKey(const QString &provider)
+{
+    if (normalizedProvider(provider) == kProviderTrefle) {
+        return QStringLiteral("TREFLE_TOKEN");
+    }
+    return QStringLiteral("PERENUAL_TOKEN");
+}
+
+QString providerDisplayName(const QString &provider)
+{
+    if (normalizedProvider(provider) == kProviderTrefle) {
+        return QStringLiteral("Trefle");
+    }
+    return QStringLiteral("Perenual");
+}
+
+QString readLocalEnvValue(const QString &keyName)
+{
+    const QString envValue = qEnvironmentVariable(keyName.toUtf8().constData()).trimmed();
     if (!envValue.isEmpty()) {
         return envValue;
     }
@@ -39,11 +77,58 @@ QString readLocalEnvToken()
         }
         const QString key = line.left(separator).trimmed();
         const QString value = line.mid(separator + 1).trimmed();
-        if (key == QStringLiteral("PERENUAL_TOKEN")) {
+        if (key == keyName) {
             return value;
         }
     }
 
+    return {};
+}
+
+QString loadSavedProvider()
+{
+    QSettings settings;
+    settings.beginGroup(kLibrarySettingsGroup);
+    const QString provider = normalizedProvider(settings.value(kProviderKey, kProviderPerenual).toString());
+    settings.endGroup();
+    return provider;
+}
+
+QString loadSavedToken(const QString &provider)
+{
+    QSettings settings;
+    settings.beginGroup(kLibrarySettingsGroup);
+    const QString token = settings.value(tokenSettingsKey(provider)).toString().trimmed();
+    settings.endGroup();
+    return token;
+}
+
+void saveProvider(const QString &provider)
+{
+    QSettings settings;
+    settings.beginGroup(kLibrarySettingsGroup);
+    settings.setValue(kProviderKey, normalizedProvider(provider));
+    settings.endGroup();
+    settings.sync();
+}
+
+void saveToken(const QString &provider, const QString &token)
+{
+    QSettings settings;
+    settings.beginGroup(kLibrarySettingsGroup);
+    settings.setValue(tokenSettingsKey(provider), token.trimmed());
+    settings.endGroup();
+    settings.sync();
+}
+
+QString defaultTokenForProvider(const QString &provider)
+{
+    if (normalizedProvider(provider) == kProviderTrefle) {
+        return kDefaultTrefleToken;
+    }
+    if (normalizedProvider(provider) == kProviderPerenual) {
+        return kDefaultPerenualToken;
+    }
     return {};
 }
 
@@ -233,11 +318,22 @@ QVariantMap resultItemFromJson(const QJsonObject &object)
 {
     const QJsonObject defaultImage = object.value(QStringLiteral("default_image")).toObject();
     QVariantMap result;
-    result.insert(QStringLiteral("id"), object.value(QStringLiteral("id")).toInt());
+    result.insert(QStringLiteral("identifier"), QString::number(object.value(QStringLiteral("id")).toInt()));
     result.insert(QStringLiteral("commonName"), object.value(QStringLiteral("common_name")).toString());
     result.insert(QStringLiteral("scientificName"), firstString(object.value(QStringLiteral("scientific_name"))));
     result.insert(QStringLiteral("family"), object.value(QStringLiteral("family")).toString());
     result.insert(QStringLiteral("imageUrl"), defaultImage.value(QStringLiteral("regular_url")).toString());
+    return result;
+}
+
+QVariantMap resultItemFromTrefleJson(const QJsonObject &object)
+{
+    QVariantMap result;
+    result.insert(QStringLiteral("identifier"), object.value(QStringLiteral("slug")).toString());
+    result.insert(QStringLiteral("commonName"), object.value(QStringLiteral("common_name")).toString());
+    result.insert(QStringLiteral("scientificName"), object.value(QStringLiteral("scientific_name")).toString());
+    result.insert(QStringLiteral("family"), object.value(QStringLiteral("family")).toString());
+    result.insert(QStringLiteral("imageUrl"), object.value(QStringLiteral("image_url")).toString());
     return result;
 }
 
@@ -283,6 +379,254 @@ QVariantMap buildPlantDraft(const QJsonObject &detailObject, const QJsonObject &
     plantData.insert(QStringLiteral("notes"), description);
     plantData.insert(QStringLiteral("imageUrl"), detailObject.value(QStringLiteral("default_image")).toObject().value(QStringLiteral("regular_url")).toString());
     return plantData;
+}
+
+QString trefleScaleText(const QString &label, const QJsonValue &value)
+{
+    if (!value.isDouble()) {
+        return {};
+    }
+    const int numericValue = value.toInt();
+    return QStringLiteral("%1 level %2/10").arg(label, QString::number(numericValue));
+}
+
+QString trefleLightRequirementText(const QJsonValue &value)
+{
+    if (!value.isDouble()) {
+        return {};
+    }
+
+    const int numericValue = value.toInt();
+    QString description;
+    if (numericValue <= 2) {
+        description = QStringLiteral("Low light");
+    } else if (numericValue <= 4) {
+        description = QStringLiteral("Filtered light");
+    } else if (numericValue <= 6) {
+        description = QStringLiteral("Bright indirect light");
+    } else if (numericValue <= 8) {
+        description = QStringLiteral("Part sun");
+    } else {
+        description = QStringLiteral("Full sun");
+    }
+
+    return QStringLiteral("%1 (%2/10)").arg(description, QString::number(numericValue));
+}
+
+QString trefleHumidityText(const QJsonValue &value)
+{
+    if (!value.isDouble()) {
+        return {};
+    }
+
+    const int numericValue = value.toInt();
+    QString description;
+    if (numericValue <= 2) {
+        description = QStringLiteral("Low humidity");
+    } else if (numericValue <= 4) {
+        description = QStringLiteral("Moderate humidity");
+    } else if (numericValue <= 6) {
+        description = QStringLiteral("Medium-high humidity");
+    } else if (numericValue <= 8) {
+        description = QStringLiteral("High humidity");
+    } else {
+        description = QStringLiteral("Very high humidity");
+    }
+
+    return QStringLiteral("%1 (%2/10)").arg(description, QString::number(numericValue));
+}
+
+QString trefleMonthsText(const QJsonValue &value)
+{
+    if (!value.isArray()) {
+        return {};
+    }
+    const QJsonArray array = value.toArray();
+    QStringList months;
+    for (const QJsonValue &entry : array) {
+        const QString month = entry.toString().trimmed();
+        if (!month.isEmpty()) {
+            months.append(month);
+        }
+    }
+    return months.join(QStringLiteral(", "));
+}
+
+QString trefleTemperatureToleranceText(const QJsonObject &growth)
+{
+    const QJsonObject minimumTemperature = growth.value(QStringLiteral("minimum_temperature")).toObject();
+    const QJsonObject maximumTemperature = growth.value(QStringLiteral("maximum_temperature")).toObject();
+
+    const auto formatTemperature = [](const QJsonObject &object) -> QString {
+        if (object.value(QStringLiteral("deg_c")).isDouble()) {
+            return QStringLiteral("%1 C").arg(QString::number(object.value(QStringLiteral("deg_c")).toDouble(), 'f', 1));
+        }
+        if (object.value(QStringLiteral("deg_f")).isDouble()) {
+            return QStringLiteral("%1 F").arg(QString::number(object.value(QStringLiteral("deg_f")).toDouble(), 'f', 1));
+        }
+        return {};
+    };
+
+    const QString minimum = formatTemperature(minimumTemperature);
+    const QString maximum = formatTemperature(maximumTemperature);
+    if (minimum.isEmpty() && maximum.isEmpty()) {
+        return {};
+    }
+    if (!minimum.isEmpty() && !maximum.isEmpty()) {
+        return QStringLiteral("%1 to %2").arg(minimum, maximum);
+    }
+    return !minimum.isEmpty() ? minimum : maximum;
+}
+
+QString trefleToxicityText(const QJsonValue &value)
+{
+    if (value.isBool()) {
+        return value.toBool() ? QStringLiteral("Yes") : QStringLiteral("No");
+    }
+    if (value.isDouble()) {
+        return value.toDouble() > 0.0 ? QStringLiteral("Yes") : QStringLiteral("No");
+    }
+
+    const QString text = firstString(value);
+    if (text.isEmpty()) {
+        return {};
+    }
+
+    const QString normalized = text.trimmed().toLower();
+    if (normalized == QStringLiteral("none")
+        || normalized == QStringLiteral("no")
+        || normalized == QStringLiteral("false")
+        || normalized == QStringLiteral("non-toxic")
+        || normalized == QStringLiteral("nontoxic")) {
+        return QStringLiteral("No");
+    }
+    if (normalized == QStringLiteral("yes")
+        || normalized == QStringLiteral("true")
+        || normalized == QStringLiteral("toxic")) {
+        return QStringLiteral("Yes");
+    }
+
+    return text.trimmed();
+}
+
+QVariantMap buildTreflePlantDraft(const QJsonObject &detailObject)
+{
+    const QJsonObject growth = detailObject.value(QStringLiteral("growth")).toObject();
+    const QJsonObject specifications = detailObject.value(QStringLiteral("specifications")).toObject();
+    const QJsonObject distribution = detailObject.value(QStringLiteral("distribution")).toObject();
+
+    QStringList notesParts;
+    const QString observations = detailObject.value(QStringLiteral("observations")).toString().trimmed();
+    if (!observations.isEmpty()) {
+        notesParts.append(observations);
+    }
+
+    const QString nativeDistribution = joinStringArray(distribution.value(QStringLiteral("native")));
+    if (!nativeDistribution.isEmpty()) {
+        notesParts.append(QStringLiteral("Native distribution: %1").arg(nativeDistribution));
+    }
+
+    const QString introducedDistribution = joinStringArray(distribution.value(QStringLiteral("introduced")));
+    if (!introducedDistribution.isEmpty()) {
+        notesParts.append(QStringLiteral("Introduced distribution: %1").arg(introducedDistribution));
+    }
+
+    if (growth.value(QStringLiteral("ph_minimum")).isDouble() || growth.value(QStringLiteral("ph_maximum")).isDouble()) {
+        const QString minimum = growth.value(QStringLiteral("ph_minimum")).isDouble()
+            ? QString::number(growth.value(QStringLiteral("ph_minimum")).toDouble(), 'f', 1)
+            : QString();
+        const QString maximum = growth.value(QStringLiteral("ph_maximum")).isDouble()
+            ? QString::number(growth.value(QStringLiteral("ph_maximum")).toDouble(), 'f', 1)
+            : QString();
+        notesParts.append(QStringLiteral("Soil pH: %1-%2").arg(minimum, maximum));
+    }
+
+    const QString soilNutriments = trefleScaleText(QStringLiteral("Soil nutriment"), growth.value(QStringLiteral("soil_nutriments")));
+    if (!soilNutriments.isEmpty()) {
+        notesParts.append(soilNutriments);
+    }
+
+    const QString soilSalinity = growth.value(QStringLiteral("soil_salinity")).isDouble()
+        ? QStringLiteral("Soil salinity level %1/10").arg(QString::number(growth.value(QStringLiteral("soil_salinity")).toInt()))
+        : QString();
+    if (!soilSalinity.isEmpty()) {
+        notesParts.append(soilSalinity);
+    }
+
+    const QString toxicity = trefleToxicityText(specifications.value(QStringLiteral("toxicity")));
+    if (!toxicity.isEmpty()) {
+        notesParts.append(QStringLiteral("Toxicity: %1").arg(toxicity));
+    }
+
+    QVariantMap plantData;
+    const QString commonName = detailObject.value(QStringLiteral("common_name")).toString().trimmed();
+    const QString scientificName = detailObject.value(QStringLiteral("scientific_name")).toString().trimmed();
+    plantData.insert(QStringLiteral("name"), !commonName.isEmpty() ? commonName : scientificName);
+    plantData.insert(QStringLiteral("scientificName"), scientificName);
+    plantData.insert(QStringLiteral("plantType"), specifications.value(QStringLiteral("growth_habit")).toString().trimmed());
+    plantData.insert(QStringLiteral("lightRequirement"), trefleLightRequirementText(growth.value(QStringLiteral("light"))));
+    plantData.insert(QStringLiteral("indoor"), QString());
+    plantData.insert(QStringLiteral("floweringSeason"), trefleMonthsText(growth.value(QStringLiteral("bloom_months"))));
+    plantData.insert(QStringLiteral("temperatureTolerance"), trefleTemperatureToleranceText(growth));
+    plantData.insert(QStringLiteral("wateringFrequency"), QString());
+    plantData.insert(QStringLiteral("wateringNotes"), QString());
+    plantData.insert(QStringLiteral("humidityPreference"), trefleHumidityText(growth.value(QStringLiteral("atmospheric_humidity"))));
+    plantData.insert(QStringLiteral("soilType"), joinStringArray(growth.value(QStringLiteral("soil_texture"))));
+    plantData.insert(QStringLiteral("fertilizingSchedule"), QString());
+    plantData.insert(QStringLiteral("pruningTime"), QString());
+    plantData.insert(QStringLiteral("pruningNotes"), QString());
+    plantData.insert(QStringLiteral("growthRate"), specifications.value(QStringLiteral("growth_rate")).toString().trimmed());
+    plantData.insert(QStringLiteral("issuesPests"), QString());
+    plantData.insert(QStringLiteral("toxicToPets"), toxicity);
+    plantData.insert(QStringLiteral("poisonousToPets"), toxicity);
+    plantData.insert(QStringLiteral("poisonousToHumans"), toxicity);
+    plantData.insert(QStringLiteral("source"), QStringLiteral("Trefle"));
+    plantData.insert(QStringLiteral("notes"), combinedText(notesParts));
+    plantData.insert(QStringLiteral("imageUrl"), detailObject.value(QStringLiteral("image_url")).toString());
+    return plantData;
+}
+
+QString buildTrefleDetailText(const QJsonObject &detailObject)
+{
+    QStringList lines;
+    appendLine(&lines, QStringLiteral("Common name"), detailObject.value(QStringLiteral("common_name")).toString());
+    appendLine(&lines, QStringLiteral("Scientific name"), detailObject.value(QStringLiteral("scientific_name")).toString());
+    appendLine(&lines, QStringLiteral("Family"), detailObject.value(QStringLiteral("family")).toString());
+    appendLine(&lines, QStringLiteral("Family common name"), detailObject.value(QStringLiteral("family_common_name")).toString());
+    appendLine(&lines, QStringLiteral("Genus"), detailObject.value(QStringLiteral("genus")).toString());
+    appendLine(&lines, QStringLiteral("Rank"), detailObject.value(QStringLiteral("rank")).toString());
+    appendLine(&lines, QStringLiteral("Status"), detailObject.value(QStringLiteral("status")).toString());
+    appendLine(&lines, QStringLiteral("Observations"), detailObject.value(QStringLiteral("observations")).toString());
+
+    const QJsonObject specifications = detailObject.value(QStringLiteral("specifications")).toObject();
+    appendLine(&lines, QStringLiteral("Growth habit"), specifications.value(QStringLiteral("growth_habit")).toString());
+    appendLine(&lines, QStringLiteral("Growth rate"), specifications.value(QStringLiteral("growth_rate")).toString());
+    appendLine(&lines, QStringLiteral("Toxicity"), specifications.value(QStringLiteral("toxicity")).toString());
+
+    const QJsonObject growth = detailObject.value(QStringLiteral("growth")).toObject();
+    appendLine(&lines, QStringLiteral("Light"), trefleLightRequirementText(growth.value(QStringLiteral("light"))));
+    appendLine(&lines, QStringLiteral("Humidity"), trefleHumidityText(growth.value(QStringLiteral("atmospheric_humidity"))));
+    appendLine(&lines, QStringLiteral("Bloom months"), trefleMonthsText(growth.value(QStringLiteral("bloom_months"))));
+    appendLine(&lines, QStringLiteral("Soil texture"), joinStringArray(growth.value(QStringLiteral("soil_texture"))));
+    appendLine(&lines, QStringLiteral("Soil humidity"), trefleScaleText(QStringLiteral("Soil humidity"), growth.value(QStringLiteral("soil_humidity"))));
+    appendLine(&lines, QStringLiteral("Soil nutriments"), trefleScaleText(QStringLiteral("Soil nutriment"), growth.value(QStringLiteral("soil_nutriments"))));
+    appendLine(&lines, QStringLiteral("Temperature tolerance"), trefleTemperatureToleranceText(growth));
+
+    if (growth.value(QStringLiteral("ph_minimum")).isDouble() || growth.value(QStringLiteral("ph_maximum")).isDouble()) {
+        lines.append(QStringLiteral("Soil pH: %1-%2")
+                         .arg(growth.value(QStringLiteral("ph_minimum")).isDouble()
+                                  ? QString::number(growth.value(QStringLiteral("ph_minimum")).toDouble(), 'f', 1)
+                                  : QString(),
+                              growth.value(QStringLiteral("ph_maximum")).isDouble()
+                                  ? QString::number(growth.value(QStringLiteral("ph_maximum")).toDouble(), 'f', 1)
+                                  : QString()));
+    }
+
+    const QJsonObject distribution = detailObject.value(QStringLiteral("distribution")).toObject();
+    appendLine(&lines, QStringLiteral("Native distribution"), joinStringArray(distribution.value(QStringLiteral("native"))));
+    appendLine(&lines, QStringLiteral("Introduced distribution"), joinStringArray(distribution.value(QStringLiteral("introduced"))));
+
+    return lines.join(QLatin1Char('\n')).trimmed();
 }
 
 QString buildDetailText(const QJsonObject &detailObject, const QJsonObject &careGuideObject)
@@ -356,13 +700,52 @@ QString buildDetailText(const QJsonObject &detailObject, const QJsonObject &care
 
 PlantLibraryViewModel::PlantLibraryViewModel(QObject *parent)
     : QObject(parent)
-    , m_token(readLocalEnvToken())
 {
+    m_provider = loadSavedProvider();
+
+    const QStringList providers = {kProviderPerenual, kProviderTrefle};
+    for (const QString &provider : providers) {
+        QString token = loadSavedToken(provider);
+        if (token.isEmpty()) {
+            token = readLocalEnvValue(tokenEnvKey(provider));
+        }
+        if (token.isEmpty()) {
+            token = defaultTokenForProvider(provider);
+        }
+        if (!token.isEmpty()) {
+            m_tokens.insert(provider, token);
+            saveToken(provider, token);
+        }
+    }
+}
+
+QString PlantLibraryViewModel::provider() const
+{
+    return m_provider;
+}
+
+QVariantList PlantLibraryViewModel::providerOptions() const
+{
+    return {
+        QVariantMap{
+            {QStringLiteral("providerId"), kProviderPerenual},
+            {QStringLiteral("displayName"), providerDisplayName(kProviderPerenual)}
+        },
+        QVariantMap{
+            {QStringLiteral("providerId"), kProviderTrefle},
+            {QStringLiteral("displayName"), providerDisplayName(kProviderTrefle)}
+        }
+    };
 }
 
 QString PlantLibraryViewModel::token() const
 {
-    return m_token;
+    return m_tokens.value(m_provider);
+}
+
+QString PlantLibraryViewModel::tokenLabel() const
+{
+    return providerDisplayName(m_provider) + QStringLiteral(" token");
 }
 
 QVariantList PlantLibraryViewModel::results() const
@@ -390,19 +773,35 @@ bool PlantLibraryViewModel::busy() const
     return m_busy;
 }
 
-void PlantLibraryViewModel::setToken(const QString &value)
+void PlantLibraryViewModel::setProvider(const QString &value)
 {
-    if (m_token == value) {
+    const QString normalized = normalizedProvider(value);
+    if (m_provider == normalized) {
         return;
     }
-    m_token = value;
+    m_provider = normalized;
+    saveProvider(m_provider);
+    clear();
+    emit providerChanged();
+    emit tokenChanged();
+}
+
+void PlantLibraryViewModel::setToken(const QString &value)
+{
+    const QString trimmedValue = value.trimmed();
+    if (m_tokens.value(m_provider) == trimmedValue) {
+        return;
+    }
+    m_tokens.insert(m_provider, trimmedValue);
+    saveToken(m_provider, trimmedValue);
     emit tokenChanged();
 }
 
 bool PlantLibraryViewModel::search(const QString &query)
 {
-    if (m_token.trimmed().isEmpty()) {
-        setLastError(QStringLiteral("Perenual token is required."));
+    const QString currentToken = token().trimmed();
+    if (currentToken.isEmpty()) {
+        setLastError(QStringLiteral("%1 token is required.").arg(providerDisplayName(m_provider)));
         return false;
     }
 
@@ -416,10 +815,17 @@ bool PlantLibraryViewModel::search(const QString &query)
     setDetailText(QString());
     setSelectedPlantData(QVariantMap());
 
-    QUrl url(QStringLiteral("%1/species-list").arg(kPerenualBaseUrl));
+    QUrl url;
     QUrlQuery urlQuery;
-    urlQuery.addQueryItem(QStringLiteral("key"), m_token.trimmed());
-    urlQuery.addQueryItem(QStringLiteral("q"), query.trimmed());
+    if (m_provider == kProviderTrefle) {
+        url = QUrl(QStringLiteral("%1/species/search").arg(kTrefleBaseUrl));
+        urlQuery.addQueryItem(QStringLiteral("token"), currentToken);
+        urlQuery.addQueryItem(QStringLiteral("q"), query.trimmed());
+    } else {
+        url = QUrl(QStringLiteral("%1/species-list").arg(kPerenualBaseUrl));
+        urlQuery.addQueryItem(QStringLiteral("key"), currentToken);
+        urlQuery.addQueryItem(QStringLiteral("q"), query.trimmed());
+    }
     url.setQuery(urlQuery);
 
     QJsonDocument document;
@@ -434,7 +840,11 @@ bool PlantLibraryViewModel::search(const QString &query)
     const QJsonArray resultArray = document.object().value(QStringLiteral("data")).toArray();
     for (const QJsonValue &value : resultArray) {
         if (value.isObject()) {
-            parsedResults.append(resultItemFromJson(value.toObject()));
+            if (m_provider == kProviderTrefle) {
+                parsedResults.append(resultItemFromTrefleJson(value.toObject()));
+            } else {
+                parsedResults.append(resultItemFromJson(value.toObject()));
+            }
         }
     }
 
@@ -457,14 +867,15 @@ bool PlantLibraryViewModel::selectResult(int index)
         return false;
     }
 
-    if (m_token.trimmed().isEmpty()) {
-        setLastError(QStringLiteral("Perenual token is required."));
+    const QString currentToken = token().trimmed();
+    if (currentToken.isEmpty()) {
+        setLastError(QStringLiteral("%1 token is required.").arg(providerDisplayName(m_provider)));
         return false;
     }
 
     const QVariantMap selected = m_results.at(index).toMap();
-    const int speciesId = selected.value(QStringLiteral("id")).toInt();
-    if (speciesId <= 0) {
+    const QString identifier = selected.value(QStringLiteral("identifier")).toString().trimmed();
+    if (identifier.isEmpty()) {
         setLastError(QStringLiteral("Selected library item does not have a valid id."));
         return false;
     }
@@ -475,9 +886,15 @@ bool PlantLibraryViewModel::selectResult(int index)
     QJsonDocument detailDocument;
     QString errorMessage;
 
-    QUrl detailUrl(QStringLiteral("%1/species/details/%2").arg(kPerenualBaseUrl).arg(speciesId));
+    QUrl detailUrl;
     QUrlQuery detailQuery;
-    detailQuery.addQueryItem(QStringLiteral("key"), m_token.trimmed());
+    if (m_provider == kProviderTrefle) {
+        detailUrl = QUrl(QStringLiteral("%1/species/%2").arg(kTrefleBaseUrl, identifier));
+        detailQuery.addQueryItem(QStringLiteral("token"), currentToken);
+    } else {
+        detailUrl = QUrl(QStringLiteral("%1/species/details/%2").arg(kPerenualBaseUrl, identifier));
+        detailQuery.addQueryItem(QStringLiteral("key"), currentToken);
+    }
     detailUrl.setQuery(detailQuery);
 
     if (!executeGetJson(detailUrl, &detailDocument, &errorMessage) || !detailDocument.isObject()) {
@@ -486,11 +903,19 @@ bool PlantLibraryViewModel::selectResult(int index)
         return false;
     }
 
+    if (m_provider == kProviderTrefle) {
+        const QJsonObject detailObject = detailDocument.object().value(QStringLiteral("data")).toObject();
+        setSelectedPlantData(buildTreflePlantDraft(detailObject));
+        setDetailText(buildTrefleDetailText(detailObject));
+        setBusy(false);
+        return true;
+    }
+
     QJsonDocument careGuideDocument;
     QUrl careGuideUrl(QStringLiteral("%1/species-care-guide-list").arg(kPerenualCareGuideBaseUrl));
     QUrlQuery careGuideQuery;
-    careGuideQuery.addQueryItem(QStringLiteral("species_id"), QString::number(speciesId));
-    careGuideQuery.addQueryItem(QStringLiteral("key"), m_token.trimmed());
+    careGuideQuery.addQueryItem(QStringLiteral("species_id"), identifier);
+    careGuideQuery.addQueryItem(QStringLiteral("key"), currentToken);
     careGuideUrl.setQuery(careGuideQuery);
 
     if (!executeGetJson(careGuideUrl, &careGuideDocument, &errorMessage) || !careGuideDocument.isObject()) {

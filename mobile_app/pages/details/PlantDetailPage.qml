@@ -139,19 +139,17 @@ Page {
 
     ScrollView {
         anchors.fill: parent
-        // contentWidth: availableWidth
-        // Rectangle {
-        //     anchors.fill: parent
-        //     color: "red"
-        // }
+        contentWidth: availableWidth
 
         ColumnLayout {
-            anchors.fill: parent
+            width: parent.width
             spacing: ui.spacing_large
             Label {
                 text: plantData.name.length ? plantData.name : qsTr("Unknown Plant") 
                 font.pixelSize: ui.point_size_xlarge
                 Layout.margins: ui.margin_medium
+                Layout.fillWidth: true
+                wrapMode: Text.Wrap
             }
             Item {
                 Layout.fillWidth: true
@@ -188,6 +186,7 @@ Page {
             }
             Button {
                 text: qsTr("Edit Plant Info")
+                Layout.fillWidth: true
                 onClicked: {
                     const targetStack = root.stackView ? root.stackView : (StackView.view ? StackView.view : null)
                     if (targetStack) {
@@ -200,6 +199,7 @@ Page {
             }
             Button {
                 text: qsTr("Journal")
+                Layout.fillWidth: true
                 onClicked: {
                     const targetStack = root.stackView ? root.stackView : (StackView.view ? StackView.view : null)
                     if (targetStack) {
@@ -213,30 +213,37 @@ Page {
             }
             Button {
                 text: qsTr("Delete Plant")
+                Layout.fillWidth: true
                 onClicked: deletePlantDialog.open()
             }
             Label {
                 text: qsTr("Care") + ":" + plantData.scientificName
                 font.pixelSize: ui.point_size_large
+                Layout.fillWidth: true
+                wrapMode: Text.Wrap
             }
             GeneralCareSection {
                 plantData: root.plantData
                 Layout.margins: ui.margin_medium
+                Layout.fillWidth: true
             }// data: plantData }
             
             UpdateSection { 
                 plantData: root.plantData
                 Layout.margins: ui.margin_medium
+                Layout.fillWidth: true
             }// data: plantData }
             Label {
                 text: qsTr("Notes")
                 font.pixelSize: ui.point_size_large
                 Layout.margins: ui.margin_medium
+                Layout.fillWidth: true
             }
             Text {
                 text: plainNotes.length ? plainNotes : qsTr("No notes yet.")
                 wrapMode: Text.Wrap
                 Layout.margins: ui.margin_medium
+                Layout.fillWidth: true
             }
             Repeater {
                 model: imageEntries

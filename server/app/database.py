@@ -93,7 +93,7 @@ def _ensure_id_sequence_default(conn: psycopg.Connection, table_name: str) -> No
 
 
 def _apply_compatibility_upgrades(conn: psycopg.Connection) -> None:
-    for table_name in ("plants", "journal_entries", "reminders", "plant_images"):
+    for table_name in ("plants", "journal_entries", "reminders", "plant_images", "plant_tags_catalog"):
         _promote_timestamp_column(conn, table_name, "created_at")
         _promote_timestamp_column(conn, table_name, "updated_at")
 

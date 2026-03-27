@@ -1,0 +1,892 @@
+{
+  "data": {
+    "id": 148678,
+    "common_name": "Astrantia",
+    "slug": "astrantia-major",
+    "scientific_name": "Astrantia major",
+    "year": 1753,
+    "bibliography": "Sp. Pl.: 235 (1753)",
+    "author": "L.",
+    "status": "accepted",
+    "rank": "species",
+    "family_common_name": "Carrot family",
+    "genus_id": 7668,
+    "observations": "C. & S. Europe to N. Caucasus",
+    "vegetable": false,
+    "image_url": "https://bs.plantnet.org/image/o/46b72d33562db87170d9351be91a51ad186be6ed",
+    "genus": "Astrantia",
+    "family": "Apiaceae",
+    "duration": null,
+    "edible_part": null,
+    "edible": false,
+    "images": {
+      "flower": [
+        {
+          "id": 260820,
+          "image_url": "https://bs.plantnet.org/image/o/0096fd7d9b0f95d33641d970209752ceacebf684",
+          "copyright": "Taken Jul 21, 2020 by Jean-Claude Lainé (cc-by-sa)"
+        },
+        {
+          "id": 260821,
+          "image_url": "https://bs.plantnet.org/image/o/955c7804fef0fe1231d346855ec97a87e5038cfb",
+          "copyright": "Taken Jul 7, 2018 by Naldi Monica (cc-by-sa)"
+        },
+        {
+          "id": 260822,
+          "image_url": "https://bs.plantnet.org/image/o/b313bb9715147065b57decce2c96382f5c87227f",
+          "copyright": "Taken Aug 15, 2018 by Víctor Huete (cc-by-sa)"
+        },
+        {
+          "id": 260823,
+          "image_url": "https://bs.plantnet.org/image/o/c48ffaa347cc95be04b01687a4a25f8d949bf6d7",
+          "copyright": "Taken Jul 15, 2018 by Sabine Crépé (cc-by-sa)"
+        },
+        {
+          "id": 260824,
+          "image_url": "https://bs.plantnet.org/image/o/1698cf04615fe019b4888740a71691f8b304cf0a",
+          "copyright": "Taken May 31, 2020 by Jean Giordano (cc-by-sa)"
+        }
+      ],
+      "leaf": [
+        {
+          "id": 260825,
+          "image_url": "https://bs.plantnet.org/image/o/b64294a26cd9c2bc8fdcdcf4a2f187a20024da4a",
+          "copyright": "Taken Jul 2, 2019 by lynn lynn (cc-by-sa)"
+        },
+        {
+          "id": 260826,
+          "image_url": "https://bs.plantnet.org/image/o/eb77806550ab50180fd3290fb348ecbed363ad68",
+          "copyright": "Taken Jun 15, 2020 by Defu Wang (cc-by-sa)"
+        },
+        {
+          "id": 260827,
+          "image_url": "https://bs.plantnet.org/image/o/c8e32bd292b49b635550748d945dd278a346492a",
+          "copyright": "Taken Jun 15, 2020 by Defu Wang (cc-by-sa)"
+        },
+        {
+          "id": 260828,
+          "image_url": "https://bs.plantnet.org/image/o/aef7206b3fc84f0401a96b27aec47dd5f21ecfc7",
+          "copyright": "Taken Aug 10, 2021 by Lennaert Steen (cc-by-sa)"
+        },
+        {
+          "id": 260829,
+          "image_url": "https://bs.plantnet.org/image/o/4b67489abea6b256d151e9fa35bdf792160f2690",
+          "copyright": "Taken Jul 15, 2021 by Jani Zadrgal (cc-by-sa)"
+        }
+      ],
+      "habit": [
+        {
+          "id": 260830,
+          "image_url": "https://bs.plantnet.org/image/o/922cb61c5cdfd7472b06a0be7bf0c8e5095b3831",
+          "copyright": "Taken Aug 10, 2021 by Lennaert Steen (cc-by-sa)"
+        },
+        {
+          "id": 260831,
+          "image_url": "https://bs.plantnet.org/image/o/7d2922a782172e729dfa86fef37585cf7163b875",
+          "copyright": "Taken Sep 8, 2021 by Jacques Zuber (cc-by-sa)"
+        },
+        {
+          "id": 260832,
+          "image_url": "https://bs.plantnet.org/image/o/45be923d0875e86db6a3dccc69e3781fed0a8ac5",
+          "copyright": "Taken Aug 19, 2021 by Jacques Zuber (cc-by-sa)"
+        },
+        {
+          "id": 260833,
+          "image_url": "https://bs.plantnet.org/image/o/46b72d33562db87170d9351be91a51ad186be6ed",
+          "copyright": "Taken Jul 15, 2021 by Jani Zadrgal (cc-by-sa)"
+        },
+        {
+          "id": 260834,
+          "image_url": "https://bs.plantnet.org/image/o/ef56ba116b517e39c214c5ce2719e86c289bf48b",
+          "copyright": "Taken Jul 25, 2020 by Mazzi Moreno (cc-by-sa)"
+        }
+      ],
+      "fruit": [
+        {
+          "id": 260835,
+          "image_url": "https://bs.plantnet.org/image/o/1e791d4f9f5340ecf63c16229f4de7c87f74ef19",
+          "copyright": "Taken May 8, 2017 by Yoan MARTIN (cc-by-sa)"
+        },
+        {
+          "id": 260836,
+          "image_url": "https://bs.plantnet.org/image/o/8f01d0049fa49e83c9db6607d7589c9ca747e430",
+          "copyright": "Taken Sep 30, 2022 by manuseitz (cc-by-sa)"
+        },
+        {
+          "id": 260837,
+          "image_url": "https://bs.plantnet.org/image/o/68d398c32a430ca03e1e6f44c9e9434eed27aa02",
+          "copyright": "Taken Sep 30, 2022 by manuseitz (cc-by-sa)"
+        },
+        {
+          "id": 260838,
+          "image_url": "https://bs.plantnet.org/image/o/44deab5923b3a03beb33e7de32182c5bc4b2a53b",
+          "copyright": "Taken Jun 11, 2017 by Yoan MARTIN (cc-by-sa)"
+        },
+        {
+          "id": 260839,
+          "image_url": "https://bs.plantnet.org/image/o/2983ad59c352217c16812c47603c2658d47608dc",
+          "copyright": "Taken Aug 14, 2020 by Christelle Zanne (cc-by-sa)"
+        }
+      ],
+      "bark": [
+        {
+          "id": 260840,
+          "image_url": "https://bs.plantnet.org/image/o/51b2bbcfaabda43132457c383dc8f64dc428407c",
+          "copyright": "Taken Jul 22, 2011 by Tela Botanica − Yoan MARTIN (cc-by-sa)"
+        },
+        {
+          "id": 260841,
+          "image_url": "https://bs.plantnet.org/image/o/5477c7016715a2b429a34cd41546084b2e89706d",
+          "copyright": "Taken Jun 29, 2013 by Tela Botanica − Paul FABRE (cc-by-sa)"
+        },
+        {
+          "id": 260842,
+          "image_url": "https://bs.plantnet.org/image/o/a740020a711a50687e54ba8a294f274dc5ee09a3",
+          "copyright": "Taken Jul 22, 2011 by Tela Botanica − Yoan MARTIN (cc-by-sa)"
+        },
+        {
+          "id": 260843,
+          "image_url": "https://bs.plantnet.org/image/o/1e73c42fc7d279987cc8e2f01dd09a481791092c",
+          "copyright": "Taken Jul 11, 2010 by Tela Botanica − Yoan MARTIN (cc-by-sa)"
+        },
+        {
+          "id": 260844,
+          "image_url": "https://bs.plantnet.org/image/o/a87584434e09621b43cccaf1dbae065e146b784b",
+          "copyright": "Taken May 25, 2022 by Teun (cc-by-sa)"
+        }
+      ],
+      "other": [
+        {
+          "id": 260845,
+          "image_url": "https://bs.plantnet.org/image/o/d4dee14e3e304ea1294a68192a007c3f876b0c98",
+          "copyright": "Taken Jun 9, 2021 by Martine Hoendervanger (cc-by-sa)"
+        },
+        {
+          "id": 260846,
+          "image_url": "https://bs.plantnet.org/image/o/433de32afdbc35460ce5cbae16e9bc7e178d74be",
+          "copyright": "Taken Jun 28, 2021 by Ren Banner (cc-by-sa)"
+        },
+        {
+          "id": 260847,
+          "image_url": "https://bs.plantnet.org/image/o/ba1fcdd03d2a217095827c5738902d05f86dcc40",
+          "copyright": "Taken Jun 15, 2014 by Tela Botanica − Liliane Roubaudi (cc-by-sa)"
+        },
+        {
+          "id": 260848,
+          "image_url": "https://bs.plantnet.org/image/o/682a9ccacb86842e02ecf51b99fa2a9c21725003",
+          "copyright": "Taken Jun 15, 2014 by Tela Botanica − Liliane Roubaudi (cc-by-sa)"
+        },
+        {
+          "id": 260849,
+          "image_url": "https://bs.plantnet.org/image/o/89b751000ff76f33090aa33820021d12e4112c15",
+          "copyright": "Taken Jul 8, 2021 by Leandro Martins Santos (cc-by-sa)"
+        }
+      ],
+      "": [
+        {
+          "id": 260817,
+          "image_url": "https://d2seqvvyy3b8p2.cloudfront.net/f977868dd60ef35897af8de04de644d5.jpg",
+          "copyright": "© copyright of the Board of Trustees of the Royal Botanic Gardens, Kew."
+        },
+        {
+          "id": 260818,
+          "image_url": "https://d2seqvvyy3b8p2.cloudfront.net/3ea02b6c0d569acae55cd06c9de21e45.jpg",
+          "copyright": "© copyright of the Board of Trustees of the Royal Botanic Gardens, Kew."
+        },
+        {
+          "id": 260819,
+          "image_url": "https://d2seqvvyy3b8p2.cloudfront.net/c7d62e2e2d20b7e94a22a8cdc5c30ee8.jpg",
+          "copyright": "© copyright of the Board of Trustees of the Royal Botanic Gardens, Kew."
+        }
+      ]
+    },
+    "common_names": {
+      "eng": [
+        "astrantia",
+        "greater masterwort",
+        "great masterwort",
+        "mountain sanicle",
+        "pink masterwort"
+      ],
+      "deu": [
+        "große sterndolde",
+        "große sterndolde i.w.s."
+      ],
+      "dan": [
+        "gulgrå museurt",
+        "håret kortstråle",
+        "kugle-museurt",
+        "stjerneskærm",
+        "stor stjerneskærm"
+      ],
+      "nor": [
+        "gulgrå ullurt",
+        "kule-ullurt",
+        "peruskjelfrø"
+      ],
+      "swe": [
+        "gulgrå ullört",
+        "gängel",
+        "klotulllört",
+        "isotähtiputki",
+        "stjärnflocka",
+        "östbinka",
+        "stjärnfloka",
+        "stjärnloka"
+      ],
+      "fin": [
+        "saksantuulenlento",
+        "tarhasaurikki",
+        "isotähtiputki"
+      ],
+      "lav": [
+        "liela zvaigznite"
+      ],
+      "nno": [
+        "stjerneskjerm"
+      ],
+      "nob": [
+        "stjerneskjerm"
+      ],
+      "est": [
+        "suur tähtputk"
+      ],
+      "nld": [
+        "groot sterrenscherm"
+      ],
+      "fra": [
+        "grande astrance"
+      ],
+      "cym": [
+        "astrantia"
+      ],
+      "lat": [
+        "astrantia"
+      ],
+      "en": [
+        "Astrantia",
+        "Greater masterwort",
+        "Great masterwort",
+        "Mountain Sanicle",
+        "Pink Masterwort"
+      ],
+      "be": [
+        "Астранцыя вялікая"
+      ],
+      "bg": [
+        "Зарниче"
+      ],
+      "ca": [
+        "Astrància gran",
+        "Astrància major"
+      ],
+      "zh": [
+        "大星芹"
+      ],
+      "cs": [
+        "Jarmanka větší",
+        "Jarmanka"
+      ],
+      "da": [
+        "Stor Stjerneskærm",
+        "Gulgrå Museurt",
+        "Håret Kortstråle",
+        "Kugle-Museurt",
+        "Stjerneskærm"
+      ],
+      "nl": [
+        "Groot sterrenscherm",
+        "Zeeuws Knoopje",
+        "Groot Sterrescherm"
+      ],
+      "et": [
+        "Suur tähtputk"
+      ],
+      "fi": [
+        "Isotähtiputki",
+        "Saksantuulenlento",
+        "Tarhasaurikki"
+      ],
+      "fr": [
+        "Grande astrance",
+        "Grande radiaire",
+        "Astrancée",
+        "Sanicle femelle",
+        "Grande Astrantie"
+      ],
+      "ka": [
+        "Ვარსკვლავა"
+      ],
+      "de": [
+        "Grosse Sterndolde",
+        "Große Sterndolde",
+        "Schwarzer Sanikel",
+        "Sternblume",
+        "Große Sterndolde i.w.S.",
+        "Kaiserwurz",
+        "Meisterwurz"
+      ],
+      "hu": [
+        "Nagy völgycsillag",
+        "Völgycsillag"
+      ],
+      "it": [
+        "Astranzia maggiore"
+      ],
+      "la": [
+        "Astrantia"
+      ],
+      "lv": [
+        "Liela zvaigznite"
+      ],
+      "lt": [
+        "Didžioji astrantija"
+      ],
+      "mk": [
+        "Голема ѕвезда"
+      ],
+      "no": [
+        "Gulgrå ullurt",
+        "Kule-ullurt",
+        "Peruskjelfrø"
+      ],
+      "nb": [
+        "Stjerneskjerm"
+      ],
+      "nn": [
+        "Stjerneskjerm"
+      ],
+      "fa": [
+        "ستاره‌گون مهتر"
+      ],
+      "pl": [
+        "Jarzmianka większa"
+      ],
+      "ru": [
+        "Астранция большая",
+        "Астранция крупная"
+      ],
+      "sk": [
+        "Jarmanka väčšia"
+      ],
+      "es": [
+        "Sanicula hembra",
+        "Astrancia",
+        "Sanícula hembra"
+      ],
+      "sv": [
+        "Stjärnflocka",
+        "Linnes fröknar",
+        "Linnés fröknar",
+        "Gulgrå ullört",
+        "Gängel",
+        "Klotulllört",
+        "Isotähtiputki",
+        "Östbinka",
+        "Stjärnfloka",
+        "Stjärnloka"
+      ],
+      "zh-tw": [
+        "大星芹"
+      ],
+      "tr": [
+        "Havaifişek çiçeği"
+      ],
+      "uk": [
+        "Астранція велика",
+        "Гоюче зілля",
+        "Напрасниця"
+      ],
+      "cy": [
+        "Astrantia"
+      ]
+    },
+    "distribution": {
+      "native": [
+        "Albania",
+        "Austria",
+        "Belarus",
+        "Bulgaria",
+        "Czechoslovakia",
+        "France",
+        "Germany",
+        "Greece",
+        "Hungary",
+        "Italy",
+        "North Caucasus",
+        "Poland",
+        "Romania",
+        "Spain",
+        "Switzerland",
+        "Ukraine",
+        "Yugoslavia"
+      ],
+      "introduced": [
+        "Belgium",
+        "Denmark",
+        "Finland",
+        "Great Britain",
+        "Northwest European R",
+        "Norway",
+        "Sweden"
+      ]
+    },
+    "distributions": {
+      "native": [
+        {
+          "id": 93,
+          "name": "Albania",
+          "slug": "alb",
+          "tdwg_code": "ALB",
+          "tdwg_level": 3,
+          "species_count": 5073,
+          "links": {
+            "self": "/api/v1/distributions/alb",
+            "plants": "/api/v1/distributions/alb/plants",
+            "species": "/api/v1/distributions/alb/species"
+          }
+        },
+        {
+          "id": 275,
+          "name": "Austria",
+          "slug": "aut",
+          "tdwg_code": "AUT",
+          "tdwg_level": 3,
+          "species_count": 6340,
+          "links": {
+            "self": "/api/v1/distributions/aut",
+            "plants": "/api/v1/distributions/aut/plants",
+            "species": "/api/v1/distributions/aut/species"
+          }
+        },
+        {
+          "id": 277,
+          "name": "Belarus",
+          "slug": "blr",
+          "tdwg_code": "BLR",
+          "tdwg_level": 3,
+          "species_count": 2372,
+          "links": {
+            "self": "/api/v1/distributions/blr",
+            "plants": "/api/v1/distributions/blr/plants",
+            "species": "/api/v1/distributions/blr/species"
+          }
+        },
+        {
+          "id": 94,
+          "name": "Bulgaria",
+          "slug": "bul",
+          "tdwg_code": "BUL",
+          "tdwg_level": 3,
+          "species_count": 6036,
+          "links": {
+            "self": "/api/v1/distributions/bul",
+            "plants": "/api/v1/distributions/bul/plants",
+            "species": "/api/v1/distributions/bul/species"
+          }
+        },
+        {
+          "id": 99,
+          "name": "Czechoslovakia",
+          "slug": "cze",
+          "tdwg_code": "CZE",
+          "tdwg_level": 3,
+          "species_count": 6071,
+          "links": {
+            "self": "/api/v1/distributions/cze",
+            "plants": "/api/v1/distributions/cze/plants",
+            "species": "/api/v1/distributions/cze/species"
+          }
+        },
+        {
+          "id": 126,
+          "name": "France",
+          "slug": "fra",
+          "tdwg_code": "FRA",
+          "tdwg_level": 3,
+          "species_count": 9809,
+          "links": {
+            "self": "/api/v1/distributions/fra",
+            "plants": "/api/v1/distributions/fra/plants",
+            "species": "/api/v1/distributions/fra/species"
+          }
+        },
+        {
+          "id": 284,
+          "name": "Germany",
+          "slug": "ger",
+          "tdwg_code": "GER",
+          "tdwg_level": 3,
+          "species_count": 6595,
+          "links": {
+            "self": "/api/v1/distributions/ger",
+            "plants": "/api/v1/distributions/ger/plants",
+            "species": "/api/v1/distributions/ger/species"
+          }
+        },
+        {
+          "id": 95,
+          "name": "Greece",
+          "slug": "grc",
+          "tdwg_code": "GRC",
+          "tdwg_level": 3,
+          "species_count": 7536,
+          "links": {
+            "self": "/api/v1/distributions/grc",
+            "plants": "/api/v1/distributions/grc/plants",
+            "species": "/api/v1/distributions/grc/species"
+          }
+        },
+        {
+          "id": 285,
+          "name": "Hungary",
+          "slug": "hun",
+          "tdwg_code": "HUN",
+          "tdwg_level": 3,
+          "species_count": 3972,
+          "links": {
+            "self": "/api/v1/distributions/hun",
+            "plants": "/api/v1/distributions/hun/plants",
+            "species": "/api/v1/distributions/hun/species"
+          }
+        },
+        {
+          "id": 119,
+          "name": "Italy",
+          "slug": "ita",
+          "tdwg_code": "ITA",
+          "tdwg_level": 3,
+          "species_count": 9715,
+          "links": {
+            "self": "/api/v1/distributions/ita",
+            "plants": "/api/v1/distributions/ita/plants",
+            "species": "/api/v1/distributions/ita/species"
+          }
+        },
+        {
+          "id": 288,
+          "name": "North Caucasus",
+          "slug": "ncs",
+          "tdwg_code": "NCS",
+          "tdwg_level": 3,
+          "species_count": 5309,
+          "links": {
+            "self": "/api/v1/distributions/ncs",
+            "plants": "/api/v1/distributions/ncs/plants",
+            "species": "/api/v1/distributions/ncs/species"
+          }
+        },
+        {
+          "id": 292,
+          "name": "Poland",
+          "slug": "pol",
+          "tdwg_code": "POL",
+          "tdwg_level": 3,
+          "species_count": 4615,
+          "links": {
+            "self": "/api/v1/distributions/pol",
+            "plants": "/api/v1/distributions/pol/plants",
+            "species": "/api/v1/distributions/pol/species"
+          }
+        },
+        {
+          "id": 96,
+          "name": "Romania",
+          "slug": "rom",
+          "tdwg_code": "ROM",
+          "tdwg_level": 3,
+          "species_count": 5568,
+          "links": {
+            "self": "/api/v1/distributions/rom",
+            "plants": "/api/v1/distributions/rom/plants",
+            "species": "/api/v1/distributions/rom/species"
+          }
+        },
+        {
+          "id": 135,
+          "name": "Spain",
+          "slug": "spa",
+          "tdwg_code": "SPA",
+          "tdwg_level": 3,
+          "species_count": 9864,
+          "links": {
+            "self": "/api/v1/distributions/spa",
+            "plants": "/api/v1/distributions/spa/plants",
+            "species": "/api/v1/distributions/spa/species"
+          }
+        },
+        {
+          "id": 294,
+          "name": "Switzerland",
+          "slug": "swi",
+          "tdwg_code": "SWI",
+          "tdwg_level": 3,
+          "species_count": 5575,
+          "links": {
+            "self": "/api/v1/distributions/swi",
+            "plants": "/api/v1/distributions/swi/plants",
+            "species": "/api/v1/distributions/swi/species"
+          }
+        },
+        {
+          "id": 273,
+          "name": "Ukraine",
+          "slug": "ukr",
+          "tdwg_code": "UKR",
+          "tdwg_level": 3,
+          "species_count": 4853,
+          "links": {
+            "self": "/api/v1/distributions/ukr",
+            "plants": "/api/v1/distributions/ukr/plants",
+            "species": "/api/v1/distributions/ukr/species"
+          }
+        },
+        {
+          "id": 98,
+          "name": "Yugoslavia",
+          "slug": "yug",
+          "tdwg_code": "YUG",
+          "tdwg_level": 3,
+          "species_count": 8125,
+          "links": {
+            "self": "/api/v1/distributions/yug",
+            "plants": "/api/v1/distributions/yug/plants",
+            "species": "/api/v1/distributions/yug/species"
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "id": 278,
+          "name": "Belgium",
+          "slug": "bgm",
+          "tdwg_code": "BGM",
+          "tdwg_level": 3,
+          "species_count": 3572,
+          "links": {
+            "self": "/api/v1/distributions/bgm",
+            "plants": "/api/v1/distributions/bgm/plants",
+            "species": "/api/v1/distributions/bgm/species"
+          }
+        },
+        {
+          "id": 280,
+          "name": "Denmark",
+          "slug": "den",
+          "tdwg_code": "DEN",
+          "tdwg_level": 3,
+          "species_count": 2996,
+          "links": {
+            "self": "/api/v1/distributions/den",
+            "plants": "/api/v1/distributions/den/plants",
+            "species": "/api/v1/distributions/den/species"
+          }
+        },
+        {
+          "id": 282,
+          "name": "Finland",
+          "slug": "fin",
+          "tdwg_code": "FIN",
+          "tdwg_level": 3,
+          "species_count": 3400,
+          "links": {
+            "self": "/api/v1/distributions/fin",
+            "plants": "/api/v1/distributions/fin/plants",
+            "species": "/api/v1/distributions/fin/species"
+          }
+        },
+        {
+          "id": 127,
+          "name": "Great Britain",
+          "slug": "grb",
+          "tdwg_code": "GRB",
+          "tdwg_level": 3,
+          "species_count": 5424,
+          "links": {
+            "self": "/api/v1/distributions/grb",
+            "plants": "/api/v1/distributions/grb/plants",
+            "species": "/api/v1/distributions/grb/species"
+          }
+        },
+        {
+          "id": 290,
+          "name": "Northwest European R",
+          "slug": "ruw",
+          "tdwg_code": "RUW",
+          "tdwg_level": 3,
+          "species_count": 2333,
+          "links": {
+            "self": "/api/v1/distributions/ruw",
+            "plants": "/api/v1/distributions/ruw/plants",
+            "species": "/api/v1/distributions/ruw/species"
+          }
+        },
+        {
+          "id": 291,
+          "name": "Norway",
+          "slug": "nor",
+          "tdwg_code": "NOR",
+          "tdwg_level": 3,
+          "species_count": 3444,
+          "links": {
+            "self": "/api/v1/distributions/nor",
+            "plants": "/api/v1/distributions/nor/plants",
+            "species": "/api/v1/distributions/nor/species"
+          }
+        },
+        {
+          "id": 293,
+          "name": "Sweden",
+          "slug": "swe",
+          "tdwg_code": "SWE",
+          "tdwg_level": 3,
+          "species_count": 5175,
+          "links": {
+            "self": "/api/v1/distributions/swe",
+            "plants": "/api/v1/distributions/swe/plants",
+            "species": "/api/v1/distributions/swe/species"
+          }
+        }
+      ]
+    },
+    "flower": {
+      "color": [
+        "white"
+      ],
+      "conspicuous": null
+    },
+    "foliage": {
+      "texture": null,
+      "color": null,
+      "leaf_retention": null
+    },
+    "fruit_or_seed": {
+      "conspicuous": null,
+      "color": null,
+      "shape": null,
+      "seed_persistence": null
+    },
+    "sources": [
+      {
+        "last_update": "2022-12-05T06:45:58.828Z",
+        "id": "wfo-0000554832",
+        "name": "WFO",
+        "url": null,
+        "citation": null
+      },
+      {
+        "last_update": "2022-12-05T06:45:58.871Z",
+        "id": "838340-1",
+        "name": "IPNI",
+        "url": null,
+        "citation": null
+      },
+      {
+        "last_update": "2022-12-08T05:56:37.674Z",
+        "id": "3034915",
+        "name": "GBIF",
+        "url": "https://www.gbif.org/species/3034915",
+        "citation": null
+      },
+      {
+        "last_update": "2022-12-08T05:56:37.937Z",
+        "id": "urn:lsid:ipni.org:names:838340-1",
+        "name": "POWO",
+        "url": "http://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:838340-1",
+        "citation": "POWO (2019). Plants of the World Online. Facilitated by the Royal Botanic Gardens, Kew. Published on the Internet; http://www.plantsoftheworldonline.org/ Retrieved 2022-12-08"
+      },
+      {
+        "last_update": "2022-12-08T05:56:43.165Z",
+        "id": "Astrantia major L.",
+        "name": "PlantNet",
+        "url": "https://identify.plantnet.org/species/the-plant-list/Astrantia major L.",
+        "citation": null
+      }
+    ],
+    "specifications": {
+      "ligneous_type": null,
+      "growth_form": null,
+      "growth_habit": "Forb/herb",
+      "growth_rate": null,
+      "average_height": {
+        "cm": null
+      },
+      "maximum_height": {
+        "cm": null
+      },
+      "nitrogen_fixation": null,
+      "shape_and_orientation": null,
+      "toxicity": null
+    },
+    "synonyms": [
+      {
+        "id": 383076,
+        "name": "Astrantia major var. brevicaule",
+        "author": "Losa & P.Monts.",
+        "sources": [
+          {
+            "last_update": "2022-12-08T05:56:37.960Z",
+            "id": "urn:lsid:ipni.org:names:3277900-4",
+            "name": "POWO",
+            "url": "http://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:3277900-4",
+            "citation": "POWO (2019). Plants of the World Online. Facilitated by the Royal Botanic Gardens, Kew. Published on the Internet; http://www.plantsoftheworldonline.org/ Retrieved 2022-12-08"
+          }
+        ]
+      }
+    ],
+    "growth": {
+      "description": null,
+      "sowing": null,
+      "days_to_harvest": null,
+      "row_spacing": {
+        "cm": null
+      },
+      "spread": {
+        "cm": null
+      },
+      "ph_maximum": 7.0,
+      "ph_minimum": 6.5,
+      "light": 6,
+      "atmospheric_humidity": 5,
+      "growth_months": null,
+      "bloom_months": [
+        "jun",
+        "jul",
+        "aug"
+      ],
+      "fruit_months": null,
+      "minimum_precipitation": {
+        "mm": null
+      },
+      "maximum_precipitation": {
+        "mm": null
+      },
+      "minimum_root_depth": {
+        "cm": null
+      },
+      "minimum_temperature": {
+        "deg_f": null,
+        "deg_c": null
+      },
+      "maximum_temperature": {
+        "deg_f": null,
+        "deg_c": null
+      },
+      "soil_nutriments": 6,
+      "soil_salinity": 0,
+      "soil_texture": null,
+      "soil_humidity": null
+    },
+    "links": {
+      "self": "/api/v1/species/astrantia-major",
+      "plant": "/api/v1/plants/astrantia-major",
+      "genus": "/api/v1/genus/astrantia"
+    }
+  },
+  "meta": {
+    "images_count": 33,
+    "sources_count": 5,
+    "synonyms_count": 0,
+    "last_modified": "2022-12-17T11:47:41.770Z"
+  }
+}

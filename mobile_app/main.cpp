@@ -18,6 +18,7 @@
 #include "ReminderSettingsViewModel.h"
 #include "DatabaseConnectionViewModel.h"
 #include "PlantLibraryViewModel.h"
+#include "TagCatalogViewModel.h"
 
 namespace {
 bool ensureWritableDir(const QString &dirPath)
@@ -185,6 +186,7 @@ int main(int argc, char *argv[])
     ReminderSettingsViewModel reminderSettingsViewModel(db);
     DatabaseConnectionViewModel databaseConnectionViewModel(db);
     PlantLibraryViewModel plantLibraryViewModel;
+    TagCatalogViewModel tagCatalogViewModel(db);
 
     QObject::connect(&journalEntryViewModel,
                      &JournalEntryListViewModel::entriesChanged,
@@ -194,13 +196,19 @@ int main(int argc, char *argv[])
                          plantListViewModel.refresh();
                      });
 
+    QObject::connect(&plantListViewModel,
+                     &PlantListViewModel::plantsChanged,
+                     &tagCatalogViewModel,
+                     &TagCatalogViewModel::refresh);
+
     QObject::connect(&databaseConnectionViewModel,
                      &DatabaseConnectionViewModel::synchronizationFinished,
                      &plantListViewModel,
                      [&plantListViewModel,
                       &journalEntryViewModel,
                       &reminderListViewModel,
-                      &reminderSettingsViewModel](bool success) {
+                      &reminderSettingsViewModel,
+                      &tagCatalogViewModel](bool success) {
                          if (!success) {
                              return;
                          }
@@ -208,6 +216,7 @@ int main(int argc, char *argv[])
                          journalEntryViewModel.refresh();
                          reminderListViewModel.refresh();
                          reminderSettingsViewModel.reload();
+                         tagCatalogViewModel.refresh();
                      });
 
     QObject::connect(&databaseConnectionViewModel,
@@ -216,7 +225,8 @@ int main(int argc, char *argv[])
                      [&plantListViewModel,
                       &journalEntryViewModel,
                       &reminderListViewModel,
-                      &reminderSettingsViewModel](bool success) {
+                      &reminderSettingsViewModel,
+                      &tagCatalogViewModel](bool success) {
                          if (!success) {
                              return;
                          }
@@ -224,6 +234,7 @@ int main(int argc, char *argv[])
                          journalEntryViewModel.refresh();
                          reminderListViewModel.refresh();
                          reminderSettingsViewModel.reload();
+                         tagCatalogViewModel.refresh();
                      });
 
     QQmlApplicationEngine engine;
@@ -233,6 +244,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("reminderSettingsViewModel", &reminderSettingsViewModel);
     engine.rootContext()->setContextProperty("databaseConnectionViewModel", &databaseConnectionViewModel);
     engine.rootContext()->setContextProperty("plantLibraryViewModel", &plantLibraryViewModel);
+    engine.rootContext()->setContextProperty("tagCatalogViewModel", &tagCatalogViewModel);
 
     const QUrl url(QStringLiteral("qrc:/mobile_app/Main.qml"));
     QObject::connect(

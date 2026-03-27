@@ -1,12 +1,30 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import "../../utils/CareFrequency.js" as CareFrequency
 
 GridLayout {
     property var plantData: ({})
     columns: 2
     rowSpacing: 6
     columnSpacing: 12
+    Layout.fillWidth: true
+    readonly property string rawWateringFrequency: plantData && plantData.wateringFrequency ? String(plantData.wateringFrequency) : ""
+    readonly property var parsedWateringFrequency: CareFrequency.parseWateringFrequency(rawWateringFrequency)
+
+    component FieldLabel: Label {
+        font.pixelSize: 14
+        color: "#555"
+        Layout.alignment: Qt.AlignTop
+    }
+
+    component FieldValue: Label {
+        font.pixelSize: 14
+        font.bold: true
+        wrapMode: Text.Wrap
+        Layout.fillWidth: true
+        Layout.alignment: Qt.AlignTop
+    }
 
     function val(key, fallback) {
         if (plantData && plantData[key] !== undefined && plantData[key] !== "") {
@@ -15,42 +33,50 @@ GridLayout {
         return fallback !== undefined ? fallback : "";
     }
 
-    Label { text: qsTr("Light"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("lightRequirement", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Light") }
+    FieldValue { text: val("lightRequirement", qsTr("Unknown")) }
 
-    Label { text: qsTr("Indoor"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("indoor", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Indoor") }
+    FieldValue { text: val("indoor", qsTr("Unknown")) }
 
-    Label { text: qsTr("Flowering season"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("floweringSeason", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Flowering season") }
+    FieldValue { text: val("floweringSeason", qsTr("Unknown")) }
 
-    Label { text: qsTr("Humidity"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("humidityPreference", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Humidity") }
+    FieldValue { text: val("humidityPreference", qsTr("Unknown")) }
 
-    Label { text: qsTr("Watering"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("wateringFrequency", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Watering") }
+    FieldValue { text: val("wateringFrequency", qsTr("Unknown")) }
+    Label {
+        visible: rawWateringFrequency.trim().length > 0 && !parsedWateringFrequency.valid
+        text: qsTr("Can't parse watering frequency for watering-status colors.")
+        color: "#c62828"
+        wrapMode: Text.Wrap
+        Layout.columnSpan: 2
+        Layout.fillWidth: true
+    }
 
-    Label { text: qsTr("Watering notes"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("wateringNotes", qsTr("Not set")); font.pixelSize: 14; font.bold: true; wrapMode: Text.Wrap }
+    FieldLabel { text: qsTr("Watering notes") }
+    FieldValue { text: val("wateringNotes", qsTr("Not set")) }
 
-    Label { text: qsTr("Fertilizing"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("fertilizingSchedule", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Fertilizing") }
+    FieldValue { text: val("fertilizingSchedule", qsTr("Unknown")) }
 
-    Label { text: qsTr("Soil"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("soilType", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Soil") }
+    FieldValue { text: val("soilType", qsTr("Unknown")) }
 
-    Label { text: qsTr("Growth rate"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("growthRate", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Growth rate") }
+    FieldValue { text: val("growthRate", qsTr("Unknown")) }
 
-    Label { text: qsTr("Temperature"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("temperatureTolerance", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Temperature") }
+    FieldValue { text: val("temperatureTolerance", qsTr("Unknown")) }
 
-    Label { text: qsTr("Toxic to pets"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("toxicToPets", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Toxic to pets") }
+    FieldValue { text: val("toxicToPets", qsTr("Unknown")) }
 
-    Label { text: qsTr("Poisonous to pets"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("poisonousToPets", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Poisonous to pets") }
+    FieldValue { text: val("poisonousToPets", qsTr("Unknown")) }
 
-    Label { text: qsTr("Poisonous to humans"); font.pixelSize: 14; color: "#555" }
-    Label { text: val("poisonousToHumans", qsTr("Unknown")); font.pixelSize: 14; font.bold: true }
+    FieldLabel { text: qsTr("Poisonous to humans") }
+    FieldValue { text: val("poisonousToHumans", qsTr("Unknown")) }
 }

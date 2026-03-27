@@ -31,6 +31,7 @@ Page {
                     lightRequirement: lightRequirement,
                     indoor: indoor,
                     floweringSeason: floweringSeason,
+                    tags: tags,
                     wateringFrequency: wateringFrequency,
                     wateringNotes: wateringNotes,
                     humidityPreference: humidityPreference,

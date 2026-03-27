@@ -12,6 +12,7 @@ class PlantListViewModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged)
+    Q_PROPERTY(QString tagFilter READ tagFilter WRITE setTagFilter NOTIFY tagFilterChanged)
     Q_PROPERTY(int count READ rowCount NOTIFY lastErrorChanged)
 public:
     enum PlantRoles {
@@ -38,6 +39,7 @@ public:
         PoisonousToPetsRole,
         IndoorRole,
         FloweringSeasonRole,
+        TagsRole,
         AcquiredDateRole,
         SourceRole,
         NotesRole,
@@ -62,19 +64,26 @@ public:
     Q_INVOKABLE QVariantMap careSchedule(int plantId) const;
     Q_INVOKABLE bool saveCareSchedule(int plantId, const QVariantMap &schedule);
     Q_INVOKABLE QString toUrl(const QString &path) const;
+    QString tagFilter() const;
+    void setTagFilter(const QString &value);
     Q_INVOKABLE QString lastError() const;
 
 signals:
     void lastErrorChanged();
     void countChanged();
+    void tagFilterChanged();
+    void plantsChanged();
 
 private:
+    void applyTagFilter();
     bool validateInput(const QVariantMap &data);
     void setLastError(const QString &message);
 
     TPlant makePlant(int id, const QVariantMap &data) const;
 
     QSqlDatabase m_db;
+    QVector<QSharedPointer<Plant>> m_allPlants;
     QVector<QSharedPointer<Plant>> m_plants;
+    QString m_tagFilter;
     QString m_lastError;
 };

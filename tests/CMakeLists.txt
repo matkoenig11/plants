@@ -14,6 +14,14 @@ target_link_libraries(PlantListViewModelTests PRIVATE PlantJournalBackend Qt6::T
 
 add_test(NAME PlantListViewModelTests COMMAND PlantListViewModelTests)
 
+add_executable(TagCatalogViewModelTests
+    services/test_tag_catalog_view_model.cpp
+)
+
+target_link_libraries(TagCatalogViewModelTests PRIVATE PlantJournalBackend Qt6::Test Qt6::Sql)
+
+add_test(NAME TagCatalogViewModelTests COMMAND TagCatalogViewModelTests)
+
 add_executable(ReminderRepositoryTests
     data/test_reminder_repository.cpp
 )
@@ -39,6 +47,8 @@ qt_add_resources(MigrationRunnerTests "migration_sql"
         "${CMAKE_SOURCE_DIR}/data/sql/plants/104_plant_images.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/plants/105_remove_unused_fields.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/plants/106_library_fields.sql"
+        "${CMAKE_SOURCE_DIR}/data/sql/plants/107_tags.sql"
+        "${CMAKE_SOURCE_DIR}/data/sql/plants/108_tag_catalog.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/schedules/001_plant_care_schedules.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/reminders/101_settings.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/reminders/102_multi_plant_rework.sql"
@@ -69,6 +79,8 @@ qt_add_resources(DatabaseSyncServiceTests "database_sync_sql"
         "${CMAKE_SOURCE_DIR}/data/sql/plants/104_plant_images.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/plants/105_remove_unused_fields.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/plants/106_library_fields.sql"
+        "${CMAKE_SOURCE_DIR}/data/sql/plants/107_tags.sql"
+        "${CMAKE_SOURCE_DIR}/data/sql/plants/108_tag_catalog.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/schedules/001_plant_care_schedules.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/reminders/101_settings.sql"
         "${CMAKE_SOURCE_DIR}/data/sql/reminders/102_multi_plant_rework.sql"

@@ -1,0 +1,23 @@
+{
+  "usageKey": 3034915,
+  "scientificName": "Astrantia major L.",
+  "canonicalName": "Astrantia major",
+  "rank": "SPECIES",
+  "status": "ACCEPTED",
+  "confidence": 97,
+  "matchType": "EXACT",
+  "kingdom": "Plantae",
+  "phylum": "Tracheophyta",
+  "order": "Apiales",
+  "family": "Apiaceae",
+  "genus": "Astrantia",
+  "species": "Astrantia major",
+  "kingdomKey": 6,
+  "phylumKey": 7707728,
+  "classKey": 220,
+  "orderKey": 1351,
+  "familyKey": 6720,
+  "genusKey": 3034914,
+  "speciesKey": 3034915,
+  "class": "Magnoliopsida"
+}

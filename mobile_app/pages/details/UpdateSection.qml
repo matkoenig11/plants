@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQml 2.15
 import "../../../ui"
+import "../../utils/CareFrequency.js" as CareFrequency
 
 ColumnLayout {
     id: root
@@ -14,6 +15,7 @@ ColumnLayout {
     property color statusColor: "red"
     property bool schedulesExpanded: false
     readonly property var seasonNames: ["winter", "spring", "summer", "autumn"]
+    readonly property var parsedWateringFrequency: CareFrequency.parseWateringFrequency(val("wateringFrequency", ""))
 
     function val(key, fallback) {
         if (plantData && plantData[key] !== undefined && plantData[key] !== "") {
@@ -158,6 +160,32 @@ ColumnLayout {
         return qsTr("Not set");
     }
 
+    function elapsedDaysSince(dateText) {
+        const lastDate = parseIsoDate(dateText);
+        if (!lastDate)
+            return null;
+
+        const today = new Date();
+        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const startOfLast = new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate());
+        return Math.round((startOfToday.getTime() - startOfLast.getTime()) / 86400000);
+    }
+
+    function lastWateredStatus() {
+        if (!parsedWateringFrequency.valid)
+            return "";
+
+        const elapsedDays = elapsedDaysSince(val("lastWatered", ""));
+        if (elapsedDays === null)
+            return "";
+
+        if (elapsedDays < parsedWateringFrequency.minDays)
+            return "early";
+        if (elapsedDays <= parsedWateringFrequency.maxDays)
+            return "due";
+        return "late";
+    }
+
     function setDefaultInterval(careKey, text) {
         const next = cloneSchedule();
         next[careKey].defaultIntervalDays = parseInt(text, 10) || 0;
@@ -210,7 +238,23 @@ ColumnLayout {
         Layout.fillWidth: true
 
         Label { text: qsTr("Last watered"); font.pixelSize: ui.point_size_small; color: "#555" }
-        Label { text: lastCareText(val("lastWatered", "")); font.pixelSize: ui.point_size_small; font.bold: true }
+        Label {
+            text: lastCareText(val("lastWatered", ""))
+            font.pixelSize: ui.point_size_small
+            font.bold: true
+            color: {
+                switch (root.lastWateredStatus()) {
+                case "early":
+                    return "#2e7d32";
+                case "due":
+                    return "#ef6c00";
+                case "late":
+                    return "#c62828";
+                default:
+                    return palette.windowText;
+                }
+            }
+        }
 
         Label { text: qsTr("Last fertilized"); font.pixelSize: ui.point_size_small; color: "#555" }
         Label { text: lastCareText(val("lastFertilized", "")); font.pixelSize: ui.point_size_small; font.bold: true }

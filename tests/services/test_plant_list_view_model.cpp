@@ -38,6 +38,7 @@ bool createPlantsTable(QSqlDatabase &db)
         "poisonous_to_pets TEXT,"
         "indoor TEXT,"
         "flowering_season TEXT,"
+        "tags TEXT,"
         "acquired_on TEXT,"
         "source TEXT,"
         "notes TEXT,"
@@ -102,6 +103,7 @@ class PlantListViewModelTest : public QObject
 
 private slots:
     void addPlantCreatesSqlRow();
+    void tagFilter_limitsVisiblePlants();
     void addPlantImageStoresSqlRow();
     void saveAndLoadCareSchedule();
     void journalEntriesBackfillLastCareDates();
@@ -125,6 +127,7 @@ void PlantListViewModelTest::addPlantCreatesSqlRow()
         data.insert(QStringLiteral("scientificName"), QStringLiteral("Monstera deliciosa"));
         data.insert(QStringLiteral("poisonousToPets"), QStringLiteral("Yes"));
         data.insert(QStringLiteral("indoor"), QStringLiteral("Yes"));
+        data.insert(QStringLiteral("tags"), QStringLiteral("indoor, tropical"));
         data.insert(QStringLiteral("acquiredDate"), QStringLiteral("2024-05-01"));
         data.insert(QStringLiteral("notes"), QStringLiteral("Test plant"));
 
@@ -133,12 +136,57 @@ void PlantListViewModelTest::addPlantCreatesSqlRow()
         QCOMPARE(viewModel.rowCount(), 1);
 
         QSqlQuery query(db);
-        QVERIFY(query.exec("SELECT name, scientific_name, poisonous_to_pets, indoor FROM plants;"));
+        QVERIFY(query.exec("SELECT name, scientific_name, poisonous_to_pets, indoor, tags FROM plants;"));
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toString(), QStringLiteral("Monstera"));
         QCOMPARE(query.value(1).toString(), QStringLiteral("Monstera deliciosa"));
         QCOMPARE(query.value(2).toString(), QStringLiteral("Yes"));
         QCOMPARE(query.value(3).toString(), QStringLiteral("Yes"));
+        QCOMPARE(query.value(4).toString(), QStringLiteral("indoor, tropical"));
+
+        db.close();
+    }
+
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
+void PlantListViewModelTest::tagFilter_limitsVisiblePlants()
+{
+    const QString connectionName = QStringLiteral("plant_list_view_model_tag_filter_test");
+
+    {
+        QSqlDatabase db = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), connectionName);
+        db.setDatabaseName(QStringLiteral(":memory:"));
+        QVERIFY(db.open());
+        QVERIFY(createPlantsTable(db));
+        QVERIFY(createJournalEntriesTable(db));
+
+        PlantListViewModel viewModel(db);
+
+        QVariantMap indoorPlant;
+        indoorPlant.insert(QStringLiteral("name"), QStringLiteral("Basil"));
+        indoorPlant.insert(QStringLiteral("tags"), QStringLiteral("indoor, herbs"));
+        QVERIFY(viewModel.addPlant(indoorPlant) > 0);
+
+        QVariantMap outdoorPlant;
+        outdoorPlant.insert(QStringLiteral("name"), QStringLiteral("Rose"));
+        outdoorPlant.insert(QStringLiteral("tags"), QStringLiteral("outdoor, flowers"));
+        QVERIFY(viewModel.addPlant(outdoorPlant) > 0);
+
+        QCOMPARE(viewModel.rowCount(), 2);
+
+        viewModel.setTagFilter(QStringLiteral("indoor"));
+        QCOMPARE(viewModel.rowCount(), 1);
+        QCOMPARE(viewModel.data(viewModel.index(0, 0), PlantListViewModel::NameRole).toString(),
+                 QStringLiteral("Basil"));
+
+        viewModel.setTagFilter(QStringLiteral("flowers"));
+        QCOMPARE(viewModel.rowCount(), 1);
+        QCOMPARE(viewModel.data(viewModel.index(0, 0), PlantListViewModel::NameRole).toString(),
+                 QStringLiteral("Rose"));
+
+        viewModel.setTagFilter(QString());
+        QCOMPARE(viewModel.rowCount(), 2);
 
         db.close();
     }

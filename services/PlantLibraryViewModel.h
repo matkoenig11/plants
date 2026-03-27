@@ -1,13 +1,17 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 #include <QVariantList>
 #include <QVariantMap>
 
 class PlantLibraryViewModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString provider READ provider WRITE setProvider NOTIFY providerChanged)
+    Q_PROPERTY(QVariantList providerOptions READ providerOptions CONSTANT)
     Q_PROPERTY(QString token READ token WRITE setToken NOTIFY tokenChanged)
+    Q_PROPERTY(QString tokenLabel READ tokenLabel NOTIFY providerChanged)
     Q_PROPERTY(QVariantList results READ results NOTIFY resultsChanged)
     Q_PROPERTY(QString detailText READ detailText NOTIFY detailTextChanged)
     Q_PROPERTY(QVariantMap selectedPlantData READ selectedPlantData NOTIFY selectedPlantDataChanged)
@@ -17,13 +21,17 @@ class PlantLibraryViewModel : public QObject
 public:
     explicit PlantLibraryViewModel(QObject *parent = nullptr);
 
+    QString provider() const;
+    QVariantList providerOptions() const;
     QString token() const;
+    QString tokenLabel() const;
     QVariantList results() const;
     QString detailText() const;
     QVariantMap selectedPlantData() const;
     QString lastError() const;
     bool busy() const;
 
+    void setProvider(const QString &value);
     void setToken(const QString &value);
 
     Q_INVOKABLE bool search(const QString &query);
@@ -31,6 +39,7 @@ public:
     Q_INVOKABLE void clear();
 
 signals:
+    void providerChanged();
     void tokenChanged();
     void resultsChanged();
     void detailTextChanged();
@@ -44,7 +53,8 @@ private:
     void setSelectedPlantData(const QVariantMap &value);
     void setBusy(bool value);
 
-    QString m_token;
+    QString m_provider;
+    QHash<QString, QString> m_tokens;
     QVariantList m_results;
     QString m_detailText;
     QVariantMap m_selectedPlantData;

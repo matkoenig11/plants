@@ -1,0 +1,111 @@
+{
+  "data": [
+    {
+      "id": 148678,
+      "common_name": "Astrantia",
+      "slug": "astrantia-major",
+      "scientific_name": "Astrantia major",
+      "year": 1753,
+      "bibliography": "Sp. Pl.: 235 (1753)",
+      "author": "L.",
+      "status": "accepted",
+      "rank": "species",
+      "family_common_name": "Carrot family",
+      "genus_id": 7668,
+      "image_url": "https://bs.plantnet.org/image/o/46b72d33562db87170d9351be91a51ad186be6ed",
+      "synonyms": [
+        "Astrantia major var. brevicaule"
+      ],
+      "genus": "Astrantia",
+      "family": "Apiaceae",
+      "links": {
+        "self": "/api/v1/species/astrantia-major",
+        "plant": "/api/v1/plants/astrantia-major",
+        "genus": "/api/v1/genus/astrantia"
+      }
+    },
+    {
+      "id": 148680,
+      "common_name": "Lesser masterwort",
+      "slug": "astrantia-minor",
+      "scientific_name": "Astrantia minor",
+      "year": 1753,
+      "bibliography": "Sp. Pl.: 235 (1753)",
+      "author": "L.",
+      "status": "accepted",
+      "rank": "species",
+      "family_common_name": "Carrot family",
+      "genus_id": 7668,
+      "image_url": "https://bs.plantnet.org/image/o/b6a8b1f6659fbd863ba9384ff0dfcf4121d91b17",
+      "synonyms": [
+        "Astrantia major subsp. minor",
+        "Astrantia digitata",
+        "Astrantia alpoina"
+      ],
+      "genus": "Astrantia",
+      "family": "Apiaceae",
+      "links": {
+        "self": "/api/v1/species/astrantia-minor",
+        "plant": "/api/v1/plants/astrantia-minor",
+        "genus": "/api/v1/genus/astrantia"
+      }
+    },
+    {
+      "id": 148675,
+      "common_name": "Krainer sterndolde",
+      "slug": "astrantia-carniolica",
+      "scientific_name": "Astrantia carniolica",
+      "year": 1778,
+      "bibliography": "N.J.von Jacquin, Fl. Austriac. 5: 31 (1778)",
+      "author": "Wulfen",
+      "status": "accepted",
+      "rank": "species",
+      "family_common_name": "Carrot family",
+      "genus_id": 7668,
+      "image_url": "https://bs.plantnet.org/image/o/74e1a5e4ff0aeabaaadf9b76e60f4cf79c217e27",
+      "synonyms": [
+        "Etoxoe aromatica",
+        "Astrantia major var. pauciflora",
+        "Astrantia major var. carniolica",
+        "Astrantia transsilvanica"
+      ],
+      "genus": "Astrantia",
+      "family": "Apiaceae",
+      "links": {
+        "self": "/api/v1/species/astrantia-carniolica",
+        "plant": "/api/v1/plants/astrantia-carniolica",
+        "genus": "/api/v1/genus/astrantia"
+      }
+    },
+    {
+      "id": 481322,
+      "common_name": null,
+      "slug": "astrantia-major-subsp-biebersteinii",
+      "scientific_name": "Astrantia major subsp. biebersteinii",
+      "year": 1836,
+      "bibliography": "Index Seminum (LE, Petropolitanus) 2: 28 (1836)",
+      "author": "I.Grint. (Fisch. & C.A.Mey.)",
+      "status": null,
+      "rank": "ssp",
+      "family_common_name": "Carrot family",
+      "genus_id": 7668,
+      "image_url": null,
+      "synonyms": [],
+      "genus": "Astrantia",
+      "family": "Apiaceae",
+      "links": {
+        "self": "/api/v1/species/astrantia-major-subsp-biebersteinii",
+        "plant": "/api/v1/plants/astrantia-major",
+        "genus": "/api/v1/genus/astrantia"
+      }
+    }
+  ],
+  "links": {
+    "self": "/api/v1/species/search?q=Astrantia+major",
+    "first": "/api/v1/species/search?page=1&q=Astrantia+major",
+    "last": "/api/v1/species/search?page=1&q=Astrantia+major"
+  },
+  "meta": {
+    "total": 4
+  }
+}

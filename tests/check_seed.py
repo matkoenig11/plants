@@ -31,6 +31,8 @@ def main():
         repo / "data" / "sql" / "plants" / "103_health_and_source.sql",
         repo / "data" / "sql" / "plants" / "104_plant_images.sql",
         repo / "data" / "sql" / "plants" / "106_library_fields.sql",
+        repo / "data" / "sql" / "plants" / "107_tags.sql",
+        repo / "data" / "sql" / "plants" / "108_tag_catalog.sql",
         repo / "data" / "sql" / "schedules" / "001_plant_care_schedules.sql",
         repo / "data" / "sql" / "reminders" / "101_settings.sql",
         repo / "data" / "sql" / "reminders" / "102_multi_plant_rework.sql",

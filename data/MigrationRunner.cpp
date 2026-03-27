@@ -232,6 +232,15 @@ QList<QStringList> MigrationRunner::migrations() const
         },
         {
             ":/sql/plants/106_library_fields.sql"
+        },
+        {
+            ":/sql/plants/107_tags.sql"
+        },
+        {
+            ":/sql/plants/108_tag_catalog.sql"
+        },
+        {
+            ":/sql/sync/003_tag_catalog_sync.sql"
         }
     };
 }

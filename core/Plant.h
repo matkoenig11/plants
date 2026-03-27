@@ -30,6 +30,7 @@ struct TPlant
     QString poisonousToPets;
     QString indoor;
     QString floweringSeason;
+    QString tags;
     QDate acquiredDate;
     QString source;
     QString notes;
@@ -70,6 +71,7 @@ public:
     QString poisonousToPets() const;
     QString indoor() const;
     QString floweringSeason() const;
+    QString tags() const;
     QDate acquiredDate() const;
     QString source() const;
     QString notes() const;
@@ -100,6 +102,7 @@ public:
     void setPoisonousToPets(const QString &value);
     void setIndoor(const QString &value);
     void setFloweringSeason(const QString &value);
+    void setTags(const QString &value);
     void setAcquiredDate(const QDate &value);
     void setSource(const QString &value);
     void setNotes(const QString &value);

@@ -6,6 +6,7 @@ C:/Z_Programming_Backup/Programming/plants/build/CMakeFiles/ALL_BUILD.dir
 C:/Z_Programming_Backup/Programming/plants/build/CMakeFiles/ZERO_CHECK.dir
 C:/Z_Programming_Backup/Programming/plants/build/tests/CMakeFiles/ReminderSchedulerTests.dir
 C:/Z_Programming_Backup/Programming/plants/build/tests/CMakeFiles/PlantListViewModelTests.dir
+C:/Z_Programming_Backup/Programming/plants/build/tests/CMakeFiles/TagCatalogViewModelTests.dir
 C:/Z_Programming_Backup/Programming/plants/build/tests/CMakeFiles/ReminderRepositoryTests.dir
 C:/Z_Programming_Backup/Programming/plants/build/tests/CMakeFiles/MigrationRunnerTests.dir
 C:/Z_Programming_Backup/Programming/plants/build/tests/CMakeFiles/MigrationRunnerTests_other_files.dir

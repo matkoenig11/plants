@@ -52,6 +52,7 @@ struct PlantRecord
     QString poisonousToPets;
     QString indoor;
     QString floweringSeason;
+    QString tags;
     QString acquiredOn;
     QString source;
     QString notes;
@@ -106,6 +107,14 @@ struct CareScheduleSyncRecord
     QString updatedAt;
 };
 
+struct TagCatalogSyncRecord
+{
+    QString syncUuid;
+    QString name;
+    QString createdAt;
+    QString updatedAt;
+};
+
 struct ReminderSettingsSyncRecord
 {
     bool exists = false;
@@ -135,6 +144,7 @@ struct SyncDataset
     QMap<QString, ReminderSyncRecord> reminders;
     QMap<QString, PlantImageSyncRecord> plantImages;
     QMap<QString, CareScheduleSyncRecord> careSchedules;
+    QMap<QString, TagCatalogSyncRecord> tagCatalog;
     ReminderSettingsSyncRecord reminderSettings;
     QVector<TombstoneRecord> tombstones;
 };
@@ -322,7 +332,7 @@ QMap<QString, PlantRecord> loadPlants(QSqlDatabase &database, QString *errorMess
             "soil_type, last_watered, fertilizing_schedule, last_fertilized, pruning_time, "
             "pruning_notes, last_pruned, growth_rate, issues_pests, "
             "temperature_tolerance, toxic_to_pets, poisonous_to_humans, poisonous_to_pets, indoor, "
-            "flowering_season, acquired_on, source, notes, created_at, updated_at "
+            "flowering_season, tags, acquired_on, source, notes, created_at, updated_at "
             "FROM plants "
             "WHERE sync_uuid IS NOT NULL AND trim(sync_uuid) <> '';")) {
         if (errorMessage) {
@@ -358,11 +368,12 @@ QMap<QString, PlantRecord> loadPlants(QSqlDatabase &database, QString *errorMess
         record.poisonousToPets = query.value(22).toString();
         record.indoor = query.value(23).toString();
         record.floweringSeason = query.value(24).toString();
-        record.acquiredOn = query.value(25).toString();
-        record.source = query.value(26).toString();
-        record.notes = query.value(27).toString();
-        record.createdAt = query.value(28).toString();
-        record.updatedAt = query.value(29).toString();
+        record.tags = query.value(25).toString();
+        record.acquiredOn = query.value(26).toString();
+        record.source = query.value(27).toString();
+        record.notes = query.value(28).toString();
+        record.createdAt = query.value(29).toString();
+        record.updatedAt = query.value(30).toString();
         result.insert(record.syncUuid, record);
     }
 
@@ -504,6 +515,33 @@ QMap<QString, CareScheduleSyncRecord> loadCareSchedules(QSqlDatabase &database, 
     return result;
 }
 
+QMap<QString, TagCatalogSyncRecord> loadTagCatalog(QSqlDatabase &database, QString *errorMessage)
+{
+    QMap<QString, TagCatalogSyncRecord> result;
+
+    QSqlQuery query(database);
+    if (!query.exec(
+            "SELECT sync_uuid, name, created_at, updated_at "
+            "FROM plant_tags_catalog "
+            "WHERE sync_uuid IS NOT NULL AND trim(sync_uuid) <> '';")) {
+        if (errorMessage) {
+            *errorMessage = query.lastError().text();
+        }
+        return result;
+    }
+
+    while (query.next()) {
+        TagCatalogSyncRecord record;
+        record.syncUuid = query.value(0).toString();
+        record.name = query.value(1).toString();
+        record.createdAt = query.value(2).toString();
+        record.updatedAt = query.value(3).toString();
+        result.insert(record.syncUuid, record);
+    }
+
+    return result;
+}
+
 ReminderSettingsSyncRecord loadReminderSettings(QSqlDatabase &database, QString *errorMessage)
 {
     ReminderSettingsSyncRecord record;
@@ -559,7 +597,7 @@ bool upsertPlant(QSqlDatabase &database, const PlantRecord &record, QString *err
             "issues_pests = :issues_pests, temperature_tolerance = :temperature_tolerance, "
             "toxic_to_pets = :toxic_to_pets, poisonous_to_humans = :poisonous_to_humans, "
             "poisonous_to_pets = :poisonous_to_pets, indoor = :indoor, "
-            "flowering_season = :flowering_season, acquired_on = :acquired_on, source = :source, notes = :notes, "
+            "flowering_season = :flowering_season, tags = :tags, acquired_on = :acquired_on, source = :source, notes = :notes, "
             "created_at = :created_at, updated_at = :updated_at "
             "WHERE sync_uuid = :sync_uuid;");
     } else {
@@ -569,14 +607,14 @@ bool upsertPlant(QSqlDatabase &database, const PlantRecord &record, QString *err
             "light_requirement, watering_frequency, watering_notes, humidity_preference, soil_type, "
             "last_watered, fertilizing_schedule, last_fertilized, pruning_time, pruning_notes, last_pruned, "
             "growth_rate, issues_pests, temperature_tolerance, toxic_to_pets, poisonous_to_humans, "
-            "poisonous_to_pets, indoor, flowering_season, "
+            "poisonous_to_pets, indoor, flowering_season, tags, "
             "acquired_on, source, notes, created_at, updated_at"
             ") VALUES ("
             ":sync_uuid, :name, :species, :location, :scientific_name, :plant_type, "
             ":light_requirement, :watering_frequency, :watering_notes, :humidity_preference, :soil_type, "
             ":last_watered, :fertilizing_schedule, :last_fertilized, :pruning_time, :pruning_notes, :last_pruned, "
             ":growth_rate, :issues_pests, :temperature_tolerance, :toxic_to_pets, :poisonous_to_humans, "
-            ":poisonous_to_pets, :indoor, :flowering_season, "
+            ":poisonous_to_pets, :indoor, :flowering_season, :tags, "
             ":acquired_on, :source, :notes, :created_at, :updated_at"
             ");");
     }
@@ -606,6 +644,7 @@ bool upsertPlant(QSqlDatabase &database, const PlantRecord &record, QString *err
     query.bindValue(QStringLiteral(":poisonous_to_pets"), record.poisonousToPets);
     query.bindValue(QStringLiteral(":indoor"), record.indoor);
     query.bindValue(QStringLiteral(":flowering_season"), record.floweringSeason);
+    query.bindValue(QStringLiteral(":tags"), record.tags);
     query.bindValue(QStringLiteral(":acquired_on"), record.acquiredOn);
     query.bindValue(QStringLiteral(":source"), record.source);
     query.bindValue(QStringLiteral(":notes"), record.notes);
@@ -878,6 +917,32 @@ bool upsertCareSchedule(QSqlDatabase &database,
     return false;
 }
 
+bool upsertTagCatalog(QSqlDatabase &database,
+                      const TagCatalogSyncRecord &record,
+                      QString *errorMessage)
+{
+    QSqlQuery query(database);
+    query.prepare(
+        "INSERT INTO plant_tags_catalog (name, sync_uuid, created_at, updated_at) "
+        "VALUES (:name, :sync_uuid, :created_at, :updated_at) "
+        "ON CONFLICT(sync_uuid) DO UPDATE SET "
+        "name = excluded.name, "
+        "created_at = excluded.created_at, "
+        "updated_at = excluded.updated_at;");
+    query.bindValue(QStringLiteral(":name"), record.name.trimmed().toLower());
+    query.bindValue(QStringLiteral(":sync_uuid"), record.syncUuid);
+    query.bindValue(QStringLiteral(":created_at"), record.createdAt);
+    query.bindValue(QStringLiteral(":updated_at"), record.updatedAt);
+    if (query.exec()) {
+        return true;
+    }
+
+    if (errorMessage) {
+        *errorMessage = query.lastError().text();
+    }
+    return false;
+}
+
 bool upsertReminderSettings(QSqlDatabase &database,
                             const ReminderSettingsSyncRecord &record,
                             QString *errorMessage)
@@ -1037,6 +1102,14 @@ SyncDataset collectLocalChanges(QSqlDatabase &database,
         return {};
     }
 
+    dataset.tagCatalog = loadAllRecords(loadTagCatalog(database, &loadError));
+    if (!loadError.isEmpty()) {
+        if (errorMessage) {
+            *errorMessage = loadError;
+        }
+        return {};
+    }
+
     dataset.reminderSettings = loadReminderSettings(database, &loadError);
     if (!loadError.isEmpty()) {
         if (errorMessage) {
@@ -1053,7 +1126,8 @@ SyncDataset collectLocalChanges(QSqlDatabase &database,
         QStringLiteral("journal_entries"),
         QStringLiteral("reminders"),
         QStringLiteral("plant_images"),
-        QStringLiteral("plant_care_schedules")
+        QStringLiteral("plant_care_schedules"),
+        QStringLiteral("plant_tags_catalog")
     };
     for (const QString &entityType : tombstoneEntities) {
         QVector<TombstoneRecord> tombstones = loadTombstoneRecords(database, entityType, QString(), &loadError);
@@ -1097,6 +1171,7 @@ QJsonObject plantToJson(const PlantRecord &record)
         { QStringLiteral("poisonous_to_pets"), record.poisonousToPets },
         { QStringLiteral("indoor"), record.indoor },
         { QStringLiteral("flowering_season"), record.floweringSeason },
+        { QStringLiteral("tags"), record.tags },
         { QStringLiteral("acquired_on"), record.acquiredOn },
         { QStringLiteral("source"), record.source },
         { QStringLiteral("notes"), record.notes },
@@ -1181,6 +1256,16 @@ QJsonObject reminderSettingsToJson(const ReminderSettingsSyncRecord &record)
     };
 }
 
+QJsonObject tagCatalogToJson(const TagCatalogSyncRecord &record)
+{
+    return {
+        { QStringLiteral("sync_uuid"), record.syncUuid },
+        { QStringLiteral("name"), record.name },
+        { QStringLiteral("created_at"), record.createdAt },
+        { QStringLiteral("updated_at"), record.updatedAt }
+    };
+}
+
 QJsonObject tombstoneToJson(const TombstoneRecord &record)
 {
     return {
@@ -1213,6 +1298,7 @@ QJsonObject datasetToJson(const SyncDataset &dataset)
         { QStringLiteral("reminders"), recordMapToJsonArray(dataset.reminders, reminderToJson) },
         { QStringLiteral("plant_images"), recordMapToJsonArray(dataset.plantImages, plantImageToJson) },
         { QStringLiteral("plant_care_schedules"), recordMapToJsonArray(dataset.careSchedules, careScheduleToJson) },
+        { QStringLiteral("plant_tags_catalog"), recordMapToJsonArray(dataset.tagCatalog, tagCatalogToJson) },
         { QStringLiteral("reminder_settings"),
           dataset.reminderSettings.exists ? QJsonValue(reminderSettingsToJson(dataset.reminderSettings)) : QJsonValue::Null },
         { QStringLiteral("tombstones"), tombstones }
@@ -1247,6 +1333,7 @@ PlantRecord plantFromJson(const QJsonObject &json)
     record.poisonousToPets = json.value(QStringLiteral("poisonous_to_pets")).toString();
     record.indoor = json.value(QStringLiteral("indoor")).toString();
     record.floweringSeason = json.value(QStringLiteral("flowering_season")).toString();
+    record.tags = json.value(QStringLiteral("tags")).toString();
     record.acquiredOn = json.value(QStringLiteral("acquired_on")).toString();
     record.source = json.value(QStringLiteral("source")).toString();
     record.notes = json.value(QStringLiteral("notes")).toString();
@@ -1330,6 +1417,16 @@ ReminderSettingsSyncRecord reminderSettingsFromJson(const QJsonObject &json)
     record.overdueTime = json.value(QStringLiteral("overdue_time")).toString(record.overdueTime);
     record.quietHoursStart = json.value(QStringLiteral("quiet_hours_start")).toString();
     record.quietHoursEnd = json.value(QStringLiteral("quiet_hours_end")).toString();
+    record.updatedAt = json.value(QStringLiteral("updated_at")).toString();
+    return record;
+}
+
+TagCatalogSyncRecord tagCatalogFromJson(const QJsonObject &json)
+{
+    TagCatalogSyncRecord record;
+    record.syncUuid = json.value(QStringLiteral("sync_uuid")).toString();
+    record.name = json.value(QStringLiteral("name")).toString();
+    record.createdAt = json.value(QStringLiteral("created_at")).toString();
     record.updatedAt = json.value(QStringLiteral("updated_at")).toString();
     return record;
 }
@@ -1530,6 +1627,10 @@ bool parseSyncResponse(const QJsonObject &responseObject,
         jsonArrayToRecordMap<QMap<QString, CareScheduleSyncRecord>>(
             changesObject.value(QStringLiteral("plant_care_schedules")).toArray(),
             careScheduleFromJson);
+    parsedChanges.tagCatalog =
+        jsonArrayToRecordMap<QMap<QString, TagCatalogSyncRecord>>(
+            changesObject.value(QStringLiteral("plant_tags_catalog")).toArray(),
+            tagCatalogFromJson);
 
     const QJsonValue reminderSettingsValue = changesObject.value(QStringLiteral("reminder_settings"));
     if (reminderSettingsValue.isObject()) {
@@ -1654,6 +1755,15 @@ bool applyServerChanges(QSqlDatabase &database,
         }
     }
 
+    for (auto it = dataset.tagCatalog.cbegin(); it != dataset.tagCatalog.cend(); ++it) {
+        if (!upsertTagCatalog(database, it.value(), errorMessage)) {
+            return false;
+        }
+        if (counters) {
+            ++counters->pulled;
+        }
+    }
+
     if (dataset.reminderSettings.exists) {
         if (!upsertReminderSettings(database, dataset.reminderSettings, errorMessage)) {
             return false;
@@ -1683,6 +1793,7 @@ bool clearLocalSyncData(QSqlDatabase &database, QString *errorMessage)
         QStringLiteral("DELETE FROM reminders;"),
         QStringLiteral("DELETE FROM plant_images;"),
         QStringLiteral("DELETE FROM plant_care_schedules;"),
+        QStringLiteral("DELETE FROM plant_tags_catalog;"),
         QStringLiteral("DELETE FROM sync_tombstones;"),
         QStringLiteral("DELETE FROM reminder_settings;"),
         QStringLiteral("DELETE FROM plants;"),

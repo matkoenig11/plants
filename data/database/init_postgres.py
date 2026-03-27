@@ -58,6 +58,7 @@ def statements() -> list[str]:
             poisonous_to_pets TEXT,
             indoor TEXT,
             flowering_season TEXT,
+            tags TEXT,
             acquired_on TEXT,
             source TEXT,
             notes TEXT,

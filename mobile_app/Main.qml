@@ -18,7 +18,22 @@ ApplicationWindow {
     Material.accent: "#2e9a5b"
     // Material.background: "#00000000"
 
+    function returnToMainView() {
+        if (stack.depth <= 1)
+            return false
+
+        stack.pop(null)
+        return true
+    }
+
     Component.onCompleted: plantListViewModel.refresh()
+
+    Shortcut {
+        context: Qt.ApplicationShortcut
+        sequences: [StandardKey.Back]
+        enabled: stack.depth > 1
+        onActivated: window.returnToMainView()
+    }
 
     header: ToolBar {
         Material.primary: "#000000ff"
@@ -53,6 +68,12 @@ ApplicationWindow {
             Action {
                 text: qsTr("Library")
                 onTriggered: stack.push("qrc:/mobile_app/pages/LibraryPage.qml", {
+                    stackView: stack
+                })
+            }
+            Action {
+                text: qsTr("Tags")
+                onTriggered: stack.push("qrc:/mobile_app/pages/TagManagementPage.qml", {
                     stackView: stack
                 })
             }

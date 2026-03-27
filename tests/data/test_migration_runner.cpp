@@ -49,6 +49,18 @@ bool triggerExists(QSqlDatabase &db, const QString &triggerName)
     }
     return query.value(0).toInt() == 1;
 }
+
+bool tableExists(QSqlDatabase &db, const QString &tableName)
+{
+    QSqlQuery query(db);
+    query.prepare(
+        QStringLiteral("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = :name;"));
+    query.bindValue(QStringLiteral(":name"), tableName);
+    if (!query.exec() || !query.next()) {
+        return false;
+    }
+    return query.value(0).toInt() == 1;
+}
 }
 
 class MigrationRunnerTest : public QObject
@@ -73,7 +85,7 @@ void MigrationRunnerTest::run_appliesSyncMetadata()
         MigrationRunner runner;
         QVERIFY(runner.run(db));
 
-        QCOMPARE(schemaVersion(db), 11);
+        QCOMPARE(schemaVersion(db), 14);
         QVERIFY(columnExists(db, QStringLiteral("plants"), QStringLiteral("sync_uuid")));
         QVERIFY(!columnExists(db, QStringLiteral("plants"), QStringLiteral("winter_location")));
         QVERIFY(!columnExists(db, QStringLiteral("plants"), QStringLiteral("summer_location")));
@@ -83,12 +95,17 @@ void MigrationRunnerTest::run_appliesSyncMetadata()
         QVERIFY(columnExists(db, QStringLiteral("plants"), QStringLiteral("poisonous_to_pets")));
         QVERIFY(columnExists(db, QStringLiteral("plants"), QStringLiteral("indoor")));
         QVERIFY(columnExists(db, QStringLiteral("plants"), QStringLiteral("flowering_season")));
+        QVERIFY(columnExists(db, QStringLiteral("plants"), QStringLiteral("tags")));
+        QVERIFY(tableExists(db, QStringLiteral("plant_tags_catalog")));
+        QVERIFY(columnExists(db, QStringLiteral("plant_tags_catalog"), QStringLiteral("sync_uuid")));
+        QVERIFY(columnExists(db, QStringLiteral("plant_tags_catalog"), QStringLiteral("updated_at")));
         QVERIFY(columnExists(db, QStringLiteral("journal_entries"), QStringLiteral("sync_uuid")));
         QVERIFY(columnExists(db, QStringLiteral("journal_entries"), QStringLiteral("updated_at")));
         QVERIFY(columnExists(db, QStringLiteral("reminders"), QStringLiteral("sync_uuid")));
         QVERIFY(columnExists(db, QStringLiteral("plant_images"), QStringLiteral("sync_uuid")));
         QVERIFY(columnExists(db, QStringLiteral("plant_care_schedules"), QStringLiteral("sync_uuid")));
         QVERIFY(triggerExists(db, QStringLiteral("plants_sync_defaults_after_insert")));
+        QVERIFY(triggerExists(db, QStringLiteral("plant_tags_catalog_sync_defaults_after_insert")));
 
         QSqlQuery insertQuery(db);
         QVERIFY(insertQuery.exec(QStringLiteral("INSERT INTO plants (name) VALUES ('Trigger Test');")));
@@ -99,6 +116,16 @@ void MigrationRunnerTest::run_appliesSyncMetadata()
         QVERIFY(selectQuery.next());
         QVERIFY(!selectQuery.value(0).toString().trimmed().isEmpty());
         QVERIFY(!selectQuery.value(1).toString().trimmed().isEmpty());
+
+        QSqlQuery insertTagQuery(db);
+        QVERIFY(insertTagQuery.exec(QStringLiteral("INSERT INTO plant_tags_catalog (name) VALUES ('indoor');")));
+
+        QSqlQuery selectTagQuery(db);
+        QVERIFY(selectTagQuery.exec(QStringLiteral(
+            "SELECT sync_uuid, updated_at FROM plant_tags_catalog WHERE name = 'indoor';")));
+        QVERIFY(selectTagQuery.next());
+        QCOMPARE(selectTagQuery.value(0).toString(), QStringLiteral("indoor"));
+        QVERIFY(!selectTagQuery.value(1).toString().trimmed().isEmpty());
 
         db.close();
     }
@@ -137,13 +164,17 @@ void MigrationRunnerTest::run_recoversFromPartialSyncMigration()
         QVERIFY(query.exec(QStringLiteral("DROP TRIGGER IF EXISTS plant_care_schedules_sync_defaults_after_insert;")));
         QVERIFY(query.exec(QStringLiteral("DROP TRIGGER IF EXISTS plant_care_schedules_sync_touch_after_update;")));
         QVERIFY(query.exec(QStringLiteral("DROP TRIGGER IF EXISTS plant_care_schedules_sync_tombstone_after_delete;")));
+        QVERIFY(query.exec(QStringLiteral("DROP TRIGGER IF EXISTS plant_tags_catalog_sync_defaults_after_insert;")));
+        QVERIFY(query.exec(QStringLiteral("DROP TRIGGER IF EXISTS plant_tags_catalog_sync_touch_after_update;")));
+        QVERIFY(query.exec(QStringLiteral("DROP TRIGGER IF EXISTS plant_tags_catalog_sync_tombstone_after_delete;")));
 
         QVERIFY(runner.run(db));
 
-        QCOMPARE(schemaVersion(db), 11);
+        QCOMPARE(schemaVersion(db), 14);
         QVERIFY(triggerExists(db, QStringLiteral("plants_sync_defaults_after_insert")));
         QVERIFY(triggerExists(db, QStringLiteral("journal_entries_sync_defaults_after_insert")));
         QVERIFY(triggerExists(db, QStringLiteral("reminders_sync_defaults_after_insert")));
+        QVERIFY(triggerExists(db, QStringLiteral("plant_tags_catalog_sync_defaults_after_insert")));
 
         db.close();
     }

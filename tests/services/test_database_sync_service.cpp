@@ -132,6 +132,7 @@ QJsonObject emptyApplied()
         { QStringLiteral("reminders"), 0 },
         { QStringLiteral("plant_images"), 0 },
         { QStringLiteral("plant_care_schedules"), 0 },
+        { QStringLiteral("plant_tags_catalog"), 0 },
         { QStringLiteral("reminder_settings"), 0 },
         { QStringLiteral("tombstones"), 0 }
     };
@@ -145,6 +146,7 @@ QJsonObject emptyChanges()
         { QStringLiteral("reminders"), QJsonArray() },
         { QStringLiteral("plant_images"), QJsonArray() },
         { QStringLiteral("plant_care_schedules"), QJsonArray() },
+        { QStringLiteral("plant_tags_catalog"), QJsonArray() },
         { QStringLiteral("reminder_settings"), QJsonValue::Null },
         { QStringLiteral("tombstones"), QJsonArray() }
     };
@@ -173,6 +175,9 @@ void DatabaseSyncServiceTest::synchronize_appliesServerChanges()
 
         MigrationRunner runner;
         QVERIFY(runner.run(db));
+
+        QSqlQuery seedTag(db);
+        QVERIFY(seedTag.exec(QStringLiteral("INSERT INTO plant_tags_catalog (name) VALUES ('local-only');")));
 
         FakeSyncServer server;
         QVERIFY(server.start());
@@ -207,6 +212,7 @@ void DatabaseSyncServiceTest::synchronize_appliesServerChanges()
                         { QStringLiteral("poisonous_to_pets"), QStringLiteral("Yes") },
                         { QStringLiteral("indoor"), QStringLiteral("Yes") },
                         { QStringLiteral("flowering_season"), QStringLiteral("Summer") },
+                        { QStringLiteral("tags"), QStringLiteral("indoor, vine") },
                         { QStringLiteral("acquired_on"), QStringLiteral("2025-05-01") },
                         { QStringLiteral("source"), QStringLiteral("Nursery") },
                         { QStringLiteral("notes"), QStringLiteral("Imported from server") },
@@ -218,6 +224,14 @@ void DatabaseSyncServiceTest::synchronize_appliesServerChanges()
                 { QStringLiteral("reminders"), QJsonArray() },
                 { QStringLiteral("plant_images"), QJsonArray() },
                 { QStringLiteral("plant_care_schedules"), QJsonArray() },
+                { QStringLiteral("plant_tags_catalog"), QJsonArray{
+                    QJsonObject{
+                        { QStringLiteral("sync_uuid"), QStringLiteral("indoor") },
+                        { QStringLiteral("name"), QStringLiteral("indoor") },
+                        { QStringLiteral("created_at"), QStringLiteral("2026-03-26T11:00:00.000Z") },
+                        { QStringLiteral("updated_at"), QStringLiteral("2026-03-26T11:00:00.000Z") }
+                    }
+                } },
                 { QStringLiteral("reminder_settings"), QJsonValue::Null },
                 { QStringLiteral("tombstones"), QJsonArray() }
             } },
@@ -239,6 +253,11 @@ void DatabaseSyncServiceTest::synchronize_appliesServerChanges()
 
         const QJsonObject requestObject = QJsonDocument::fromJson(server.requestBody()).object();
         QCOMPARE(requestObject.value(QStringLiteral("client_id")).toString(), QStringLiteral("client-1"));
+        const QJsonArray uploadedTags = requestObject.value(QStringLiteral("changes")).toObject()
+                                       .value(QStringLiteral("plant_tags_catalog")).toArray();
+        QCOMPARE(uploadedTags.size(), 1);
+        QCOMPARE(uploadedTags.at(0).toObject().value(QStringLiteral("sync_uuid")).toString(), QStringLiteral("local-only"));
+        QCOMPARE(uploadedTags.at(0).toObject().value(QStringLiteral("name")).toString(), QStringLiteral("local-only"));
 
         QSqlQuery query(db);
         query.prepare(QStringLiteral("SELECT name FROM plants WHERE sync_uuid = :sync_uuid;"));
@@ -246,10 +265,15 @@ void DatabaseSyncServiceTest::synchronize_appliesServerChanges()
         QVERIFY(query.exec());
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toString(), QStringLiteral("Server Plant"));
-        QVERIFY(query.exec(QStringLiteral("SELECT poisonous_to_pets, indoor FROM plants WHERE sync_uuid = 'server-plant-1';")));
+        QVERIFY(query.exec(QStringLiteral("SELECT poisonous_to_pets, indoor, tags FROM plants WHERE sync_uuid = 'server-plant-1';")));
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toString(), QStringLiteral("Yes"));
         QCOMPARE(query.value(1).toString(), QStringLiteral("Yes"));
+        QCOMPARE(query.value(2).toString(), QStringLiteral("indoor, vine"));
+        QVERIFY(query.exec(QStringLiteral("SELECT name, sync_uuid FROM plant_tags_catalog WHERE sync_uuid = 'indoor';")));
+        QVERIFY(query.next());
+        QCOMPARE(query.value(0).toString(), QStringLiteral("indoor"));
+        QCOMPARE(query.value(1).toString(), QStringLiteral("indoor"));
 
         db.close();
     }
@@ -348,6 +372,7 @@ void DatabaseSyncServiceTest::forcePull_replacesLocalDataWithServerSnapshot()
                         { QStringLiteral("poisonous_to_pets"), QStringLiteral("Yes") },
                         { QStringLiteral("indoor"), QStringLiteral("Yes") },
                         { QStringLiteral("flowering_season"), QStringLiteral("Summer") },
+                        { QStringLiteral("tags"), QStringLiteral("indoor, tropical") },
                         { QStringLiteral("acquired_on"), QStringLiteral("2024-06-01") },
                         { QStringLiteral("source"), QStringLiteral("Server") },
                         { QStringLiteral("notes"), QStringLiteral("Pulled from server") },
@@ -359,6 +384,14 @@ void DatabaseSyncServiceTest::forcePull_replacesLocalDataWithServerSnapshot()
                 { QStringLiteral("reminders"), QJsonArray() },
                 { QStringLiteral("plant_images"), QJsonArray() },
                 { QStringLiteral("plant_care_schedules"), QJsonArray() },
+                { QStringLiteral("plant_tags_catalog"), QJsonArray{
+                    QJsonObject{
+                        { QStringLiteral("sync_uuid"), QStringLiteral("tropical") },
+                        { QStringLiteral("name"), QStringLiteral("tropical") },
+                        { QStringLiteral("created_at"), QStringLiteral("2026-03-26T13:00:00.000Z") },
+                        { QStringLiteral("updated_at"), QStringLiteral("2026-03-26T13:00:00.000Z") }
+                    }
+                } },
                 { QStringLiteral("reminder_settings"), QJsonValue::Null },
                 { QStringLiteral("tombstones"), QJsonArray() }
             } },
@@ -385,11 +418,15 @@ void DatabaseSyncServiceTest::forcePull_replacesLocalDataWithServerSnapshot()
         QVERIFY(changesObject.value(QStringLiteral("reminder_settings")).isNull());
 
         QSqlQuery query(db);
-        QVERIFY(query.exec(QStringLiteral("SELECT name, sync_uuid FROM plants ORDER BY name;")));
+        QVERIFY(query.exec(QStringLiteral("SELECT name, sync_uuid, tags FROM plants ORDER BY name;")));
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toString(), QStringLiteral("Fresh Server Plant"));
         QCOMPARE(query.value(1).toString(), QStringLiteral("server-plant-2"));
+        QCOMPARE(query.value(2).toString(), QStringLiteral("indoor, tropical"));
         QVERIFY(!query.next());
+        QVERIFY(query.exec(QStringLiteral("SELECT COUNT(*) FROM plant_tags_catalog WHERE name = 'tropical';")));
+        QVERIFY(query.next());
+        QCOMPARE(query.value(0).toInt(), 1);
 
         db.close();
     }
@@ -442,6 +479,7 @@ void DatabaseSyncServiceTest::synchronize_afterForcePullUploadsDeletedPlantTombs
                         { QStringLiteral("poisonous_to_pets"), QStringLiteral("No") },
                         { QStringLiteral("indoor"), QStringLiteral("No") },
                         { QStringLiteral("flowering_season"), QStringLiteral("Summer") },
+                        { QStringLiteral("tags"), QStringLiteral("outdoor, flowers") },
                         { QStringLiteral("acquired_on"), QStringLiteral("2024-05-01") },
                         { QStringLiteral("source"), QStringLiteral("Server") },
                         { QStringLiteral("notes"), QStringLiteral("Should be deleted on sync") },
@@ -453,6 +491,7 @@ void DatabaseSyncServiceTest::synchronize_afterForcePullUploadsDeletedPlantTombs
                 { QStringLiteral("reminders"), QJsonArray() },
                 { QStringLiteral("plant_images"), QJsonArray() },
                 { QStringLiteral("plant_care_schedules"), QJsonArray() },
+                { QStringLiteral("plant_tags_catalog"), QJsonArray() },
                 { QStringLiteral("reminder_settings"), QJsonValue::Null },
                 { QStringLiteral("tombstones"), QJsonArray() }
             } },
@@ -466,6 +505,7 @@ void DatabaseSyncServiceTest::synchronize_afterForcePullUploadsDeletedPlantTombs
                 { QStringLiteral("reminders"), 0 },
                 { QStringLiteral("plant_images"), 0 },
                 { QStringLiteral("plant_care_schedules"), 0 },
+                { QStringLiteral("plant_tags_catalog"), 0 },
                 { QStringLiteral("reminder_settings"), 0 },
                 { QStringLiteral("tombstones"), 1 }
             } },

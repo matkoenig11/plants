@@ -37,6 +37,7 @@ PLANT_FIELDS = [
     "poisonous_to_pets",
     "indoor",
     "flowering_season",
+    "tags",
     "acquired_on",
     "source",
     "notes",
@@ -149,6 +150,7 @@ class PostgresSyncService:
             "reminders": 0,
             "plant_images": 0,
             "plant_care_schedules": 0,
+            "plant_tags_catalog": 0,
             "reminder_settings": 0,
             "tombstones": 0,
         }
@@ -175,6 +177,10 @@ class PostgresSyncService:
                 for schedule in changes.get("plant_care_schedules", []):
                     if self._apply_care_schedule(conn, account_id, schedule, conflicts):
                         applied["plant_care_schedules"] += 1
+
+                for tag in changes.get("plant_tags_catalog", []):
+                    if self._apply_tag_catalog(conn, account_id, tag, conflicts):
+                        applied["plant_tags_catalog"] += 1
 
                 reminder_settings = changes.get("reminder_settings")
                 if isinstance(reminder_settings, dict) and reminder_settings:
@@ -352,14 +358,14 @@ class PostgresSyncService:
                 soil_type, last_watered, fertilizing_schedule, last_fertilized, pruning_time,
                 pruning_notes, last_pruned, growth_rate, issues_pests,
                 temperature_tolerance, toxic_to_pets, poisonous_to_humans, poisonous_to_pets, indoor,
-                flowering_season, acquired_on, source, notes, created_at, updated_at
+                flowering_season, tags, acquired_on, source, notes, created_at, updated_at
             ) VALUES (
                 %(account_id)s, %(sync_uuid)s, %(name)s, %(species)s, %(location)s, %(scientific_name)s, %(plant_type)s,
                 %(light_requirement)s, %(watering_frequency)s, %(watering_notes)s, %(humidity_preference)s,
                 %(soil_type)s, %(last_watered)s, %(fertilizing_schedule)s, %(last_fertilized)s, %(pruning_time)s,
                 %(pruning_notes)s, %(last_pruned)s, %(growth_rate)s, %(issues_pests)s,
                 %(temperature_tolerance)s, %(toxic_to_pets)s, %(poisonous_to_humans)s, %(poisonous_to_pets)s, %(indoor)s,
-                %(flowering_season)s, %(acquired_on)s, %(source)s, %(notes)s, %(created_at)s, %(updated_at)s
+                %(flowering_season)s, %(tags)s, %(acquired_on)s, %(source)s, %(notes)s, %(created_at)s, %(updated_at)s
             )
             ON CONFLICT (account_id, sync_uuid) DO UPDATE SET
                 name = EXCLUDED.name,
@@ -386,6 +392,7 @@ class PostgresSyncService:
                 poisonous_to_pets = EXCLUDED.poisonous_to_pets,
                 indoor = EXCLUDED.indoor,
                 flowering_season = EXCLUDED.flowering_season,
+                tags = EXCLUDED.tags,
                 acquired_on = EXCLUDED.acquired_on,
                 source = EXCLUDED.source,
                 notes = EXCLUDED.notes,
@@ -642,6 +649,39 @@ class PostgresSyncService:
             )
         return True
 
+    def _apply_tag_catalog(self, conn: psycopg.Connection, account_id: int, record: dict[str, Any], conflicts: list[dict[str, Any]]) -> bool:
+        prepared, updated_at = self._prepare_upsert(conn, account_id, "plant_tags_catalog", record, conflicts)
+        if prepared is None or updated_at is None:
+            return False
+        existing = self._fetch_existing(conn, "plant_tags_catalog", account_id, prepared["sync_uuid"])
+        if existing and self._server_is_newer(existing["updated_at"], record.get("updated_at")):
+            self._record_conflict(conflicts, "plant_tags_catalog", prepared["sync_uuid"], "server_newer")
+            return False
+
+        name = (record.get("name") or "").strip().lower()
+        if not name:
+            raise SyncValidationError(400, "plant_tags_catalog record is missing name.")
+
+        conn.execute(
+            """
+            INSERT INTO plant_tags_catalog (account_id, sync_uuid, name, created_at, updated_at)
+            VALUES (%(account_id)s, %(sync_uuid)s, %(name)s, %(created_at)s, %(updated_at)s)
+            ON CONFLICT (account_id, sync_uuid) DO UPDATE SET
+                name = EXCLUDED.name,
+                created_at = EXCLUDED.created_at,
+                updated_at = EXCLUDED.updated_at;
+            """,
+            {
+                "account_id": account_id,
+                "sync_uuid": prepared["sync_uuid"],
+                "name": name,
+                "created_at": prepared["created_at"],
+                "updated_at": updated_at,
+            },
+        )
+        self._delete_stale_tombstone(conn, account_id, "plant_tags_catalog", prepared["sync_uuid"], updated_at)
+        return True
+
     def _apply_tombstone(self, conn: psycopg.Connection, account_id: int, record: dict[str, Any], conflicts: list[dict[str, Any]]) -> bool:
         entity_type = (record.get("entity_type") or "").strip()
         sync_uuid = (record.get("sync_uuid") or "").strip()
@@ -671,6 +711,7 @@ class PostgresSyncService:
             "reminders": self._fetch_reminders(conn, account_id, since),
             "plant_images": self._fetch_plant_images(conn, account_id, since),
             "plant_care_schedules": self._fetch_care_schedules(conn, account_id, since),
+            "plant_tags_catalog": self._fetch_tag_catalog(conn, account_id, since),
             "reminder_settings": self._fetch_reminder_settings(conn, account_id, since),
             "tombstones": self._fetch_tombstones(conn, account_id, since),
         }
@@ -830,6 +871,29 @@ class PostgresSyncService:
             "quiet_hours_end": row["quiet_hours_end"],
             "updated_at": to_iso(row["updated_at"]),
         }
+
+    def _fetch_tag_catalog(self, conn: psycopg.Connection, account_id: int, since: datetime | None) -> list[dict[str, Any]]:
+        rows = conn.execute(
+            """
+            SELECT *
+            FROM plant_tags_catalog
+            WHERE account_id = %(account_id)s
+            ORDER BY updated_at, sync_uuid
+            """,
+            {"account_id": account_id},
+        ).fetchall()
+        result: list[dict[str, Any]] = []
+        for row in rows:
+            row_updated_at = parse_timestamp(row["updated_at"])
+            if since and row_updated_at is not None and row_updated_at <= since:
+                continue
+            result.append({
+                "sync_uuid": row["sync_uuid"],
+                "name": row["name"],
+                "created_at": to_iso(row["created_at"]),
+                "updated_at": to_iso(row["updated_at"]),
+            })
+        return result
 
     def _fetch_tombstones(self, conn: psycopg.Connection, account_id: int, since: datetime | None) -> list[dict[str, Any]]:
         rows = conn.execute(

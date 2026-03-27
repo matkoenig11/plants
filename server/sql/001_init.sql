@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS plants (
     poisonous_to_pets TEXT,
     indoor TEXT,
     flowering_season TEXT,
+    tags TEXT,
     acquired_on TEXT,
     source TEXT,
     notes TEXT,
@@ -72,6 +73,7 @@ ALTER TABLE plants ADD COLUMN IF NOT EXISTS poisonous_to_humans TEXT;
 ALTER TABLE plants ADD COLUMN IF NOT EXISTS poisonous_to_pets TEXT;
 ALTER TABLE plants ADD COLUMN IF NOT EXISTS indoor TEXT;
 ALTER TABLE plants ADD COLUMN IF NOT EXISTS flowering_season TEXT;
+ALTER TABLE plants ADD COLUMN IF NOT EXISTS tags TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_plants_account_updated_at
 ON plants(account_id, updated_at);
@@ -356,6 +358,28 @@ BEGIN
         SELECT 1
         FROM information_schema.columns
         WHERE table_schema = 'public'
+          AND table_name = 'plant_tags_catalog'
+          AND column_name = 'created_at'
+          AND data_type = 'text'
+    ) THEN
+        EXECUTE 'ALTER TABLE plant_tags_catalog ALTER COLUMN created_at TYPE TIMESTAMPTZ USING COALESCE(NULLIF(created_at, ''''), NOW()::text)::timestamptz';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'plant_tags_catalog'
+          AND column_name = 'updated_at'
+          AND data_type = 'text'
+    ) THEN
+        EXECUTE 'ALTER TABLE plant_tags_catalog ALTER COLUMN updated_at TYPE TIMESTAMPTZ USING COALESCE(NULLIF(updated_at, ''''), NOW()::text)::timestamptz';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
           AND table_name = 'sync_tombstones'
           AND column_name = 'deleted_at'
           AND data_type = 'text'
@@ -389,6 +413,32 @@ WHERE account_id IS NULL;
 
 CREATE INDEX IF NOT EXISTS idx_plant_care_schedules_account_updated_at
 ON plant_care_schedules(account_id, updated_at);
+
+CREATE TABLE IF NOT EXISTS plant_tags_catalog (
+    account_id BIGINT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+    sync_uuid TEXT NOT NULL,
+    name TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (account_id, sync_uuid),
+    UNIQUE (account_id, name)
+);
+
+ALTER TABLE plant_tags_catalog ADD COLUMN IF NOT EXISTS account_id BIGINT;
+UPDATE plant_tags_catalog
+SET account_id = (SELECT id FROM accounts WHERE slug = 'default')
+WHERE account_id IS NULL;
+ALTER TABLE plant_tags_catalog ADD COLUMN IF NOT EXISTS sync_uuid TEXT;
+ALTER TABLE plant_tags_catalog ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ;
+UPDATE plant_tags_catalog
+SET sync_uuid = lower(trim(name))
+WHERE sync_uuid IS NULL OR trim(sync_uuid) = '';
+UPDATE plant_tags_catalog
+SET updated_at = COALESCE(updated_at, created_at, NOW())
+WHERE updated_at IS NULL;
+
+CREATE INDEX IF NOT EXISTS idx_plant_tags_catalog_account_updated_at
+ON plant_tags_catalog(account_id, updated_at);
 
 CREATE TABLE IF NOT EXISTS sync_tombstones (
     account_id BIGINT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
@@ -427,3 +477,6 @@ ON plant_images(account_id, sync_uuid);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_plant_care_schedules_account_sync_uuid
 ON plant_care_schedules(account_id, sync_uuid);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_plant_tags_catalog_account_sync_uuid
+ON plant_tags_catalog(account_id, sync_uuid);

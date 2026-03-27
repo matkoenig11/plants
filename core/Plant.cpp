@@ -34,6 +34,7 @@ QString Plant::poisonousToHumans() const { return m_data.poisonousToHumans; }
 QString Plant::poisonousToPets() const { return m_data.poisonousToPets; }
 QString Plant::indoor() const { return m_data.indoor; }
 QString Plant::floweringSeason() const { return m_data.floweringSeason; }
+QString Plant::tags() const { return m_data.tags; }
 QDate Plant::acquiredDate() const { return m_data.acquiredDate; }
 QString Plant::source() const { return m_data.source; }
 QString Plant::notes() const { return m_data.notes; }
@@ -63,6 +64,7 @@ void Plant::setPoisonousToHumans(const QString &value) { m_data.poisonousToHuman
 void Plant::setPoisonousToPets(const QString &value) { m_data.poisonousToPets = value; }
 void Plant::setIndoor(const QString &value) { m_data.indoor = value; }
 void Plant::setFloweringSeason(const QString &value) { m_data.floweringSeason = value; }
+void Plant::setTags(const QString &value) { m_data.tags = value; }
 void Plant::setAcquiredDate(const QDate &value) { m_data.acquiredDate = value; }
 void Plant::setSource(const QString &value) { m_data.source = value; }
 void Plant::setNotes(const QString &value) { m_data.notes = value; }

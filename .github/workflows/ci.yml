@@ -17,8 +17,9 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.9.1
-          modules: 'qtquickcontrols2 qtsql qtquicktest'
+          version: 6.6.3
+          arch: gcc_64
+          # modules: 'qtquickcontrols2 qtsql qtquicktest'
           cache: true
 
       - name: Configure
